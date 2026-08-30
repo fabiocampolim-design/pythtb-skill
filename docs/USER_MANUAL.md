@@ -1,0 +1,182 @@
+# pythtb-skill — User Manual
+
+Version 1.0.0 — 2026-08-30. Source: `docs/USER_MANUAL.md`; build HTML/PDF with
+`python docs/build_manual.py` (`--outdir D`, `--no-pdf`, `--verbose`). Companions:
+`SKILL.md` (teaches an AI agent how to *use* PythTB) and `AGENTS.md` (how to
+*maintain* this repository). This manual and the README must never contradict
+each other — a test checks the counts.
+
+## 1. What you get
+
+Three layers around **PythTB 2.0.2**, the pure-Python tight-binding package by
+Coh, Vanderbilt and Cole:
+
+1. **An AI-agent skill** — `SKILL.md` + `references/` (API map with every trap,
+   invariant recipes, capability matrix vs Kwant, ecosystem). Clone the
+   repository into `~/.claude/skills/pythtb` (Claude Code) or feed `SKILL.md`
+   to any agent framework.
+2. **A verified toolkit** — `scripts/pythtb_tools.py` (helpers: `wilson_phases`,
+   `z2_from_wcc`, `z2_wcc_flow`, `remove_orb_copy`, `to_kwant`; run
+   `--selftest`, `--version`, `--quiet`) and `scripts/verify_pythtb.py`
+   (5-check environment test; `--data-dir D`, `--quiet`, `--version`).
+3. **Two Jupyter notebooks** shipped **fully executed** (all outputs, figures and
+   check results stored in the files), plus the tooling to rebuild and re-verify them.
+
+| Notebook | Content | Size | Run time |
+|---|---|---|---|
+| `PythTB_Theory_and_Practice.ipynb` | Parts I–IV, sections §1–31, 116 cells, 72 inline physics checks, 69 captioned figures | 5.4 MB | ≈ 1.5 min |
+| `PythTB_Exercises_Solutions.ipynb` | 20 worked exercises (I.1 – IV.4) with 35 checks and 18 figures | 0.9 MB | ≈ 1.1 min |
+
+You can read them on GitHub or in any notebook viewer without installing anything;
+to re-run or modify them, follow §3.
+
+## 2. Contents at a glance
+
+**Part I — Fundamentals (§1–13).** From wavefunctions to hoppings; the 2.0 object
+model (`Lattice`, `TBModel`, `Mesh`, `WFArray`); SSH chain; graphene and boron
+nitride; Lieb and kagome flat bands with compact localized states; finite systems
+(`cut_piece`), supercells and defects (`make_supercell`, `remove_orb`); native spin
+(`spinful=True`); the Berry-phase machinery and electric polarization; the Rice–Mele
+Thouless pump; 3D models; importing a Wannier90 model of silicon (`W90`);
+Wannierization inside PythTB (`Wannier`).
+
+**Part II — Topological matter (§14–21).** Haldane model (Chern number three ways,
+phase diagram, edge states); Kane–Mele Z₂ via Wannier-centre flow; BHZ quantum well
+on a lattice; BBH quadrupole insulator and nested Wilson loops; Kitaev chain as a
+BdG "hack" with Majorana end modes; Weyl semimetals (monopoles, sliced Chern numbers,
+Fermi arcs); Fu–Kane–Mele 3D TI and the axion angle θ with second Chern number.
+
+**Part III — Stretching PythTB (§21–24).** Hofstadter butterfly via Landau-gauge
+magnetic supercells; Anderson localization and inverse participation ratios; a
+Penrose quasicrystal from de Bruijn's pentagrid; the O(N³) dense-diagonalization wall.
+
+**Part IV — What PythTB cannot do (§25–31).** Each limitation *demonstrated* with
+failing code: no transport (leads, S-matrix, conductance), no sparse solvers/KPM,
+no continuum discretizer or symbolic input, no symmetry validation (BdG pitfalls),
+no interactions unless you write the loop (mean-field Hubbard, self-consistent BCS);
+a capability matrix PythTB vs Kwant; where to go next.
+
+**Exercises.** Trestle lattice; particle–hole breaking in graphene; (non-)fragility
+of the Lieb flat band; BN polarization; a pump that pumps nothing; silicon conduction
+bands; competing masses in Haldane; Kane–Mele phase map; QSH→QAH under exchange;
+the corner-charge pump; a Zak phase for Kitaev; annihilating Weyl nodes; colouring
+the butterfly (gap Chern numbers, Diophantine equation); other lattices and
+relativistic Landau levels; 1D localization length; Ammann–Beenker quasicrystal;
+exporting a PythTB model to Kwant; KPM by hand; non-collinear mean field; a
+self-consistent Kitaev chain.
+
+## 3. Installation
+
+Requirements: Python 3.12 or 3.13, `pip`. Windows users with Miniconda can run the
+installer; everyone else uses pip directly.
+
+```powershell
+# Windows / Miniconda — creates env "pythtb" and Jupyter kernel "pythtb-mc"
+powershell -ExecutionPolicy Bypass -File .\install_pythtb_windows.ps1
+# options: -EnvName NAME -KernelName NAME -PythonVersion 3.13 -SkipVerify
+```
+
+```bash
+# any platform
+python -m pip install -r requirements.txt
+python -m ipykernel install --user --name pythtb-mc --display-name "Python 3.12 (pythtb)"
+python scripts/verify_pythtb.py          # 5 checks, ends with "Environment OK."
+python scripts/pythtb_tools.py --selftest
+```
+
+The notebooks are pinned to the kernel name **`pythtb-mc`**. If you registered a
+different name, either select your kernel in Jupyter/VS Code once, or change
+`KERNELSPEC` in `build/nbbuild.py` and re-assemble (§5).
+
+Windows note: set `PYTHONIOENCODING=utf-8` before running the scripts from a
+console — the notebooks print Greek letters and arrows.
+
+## 4. Reading and running
+
+- Open either notebook with the `pythtb-mc` kernel and run all cells. Every physics
+  claim prints `[PASS] label — detail` (or `[FAIL]`); every figure is followed by a
+  numbered caption explaining what to look at and why.
+- Nothing is downloaded at run time. §12 and exercise I.6 read the silicon Wannier90
+  files from `data/w90_silicon/` (relative path: run from the repository root).
+- Runtime is about 1.5 minutes per notebook on a laptop; no cell needs more than ~20 s.
+
+## 5. Rebuilding (if you change anything)
+
+The `.ipynb` files are generated. Edit the cell sources in `build/part*.py`
+(main) or `build/ex_part*.py` (exercises), then:
+
+```bash
+python build/assemble.py            # --which main|exercises|all, --outdir D, --log-dir D, --list, --verbose/--quiet
+python build/execute.py             # --which, --indir D, --outdir D, --log-dir D, --kernel NAME, --timeout S, --tally-only, --verbose/--quiet
+python -m pytest tests              # fast integrity suite (~40 s)
+```
+
+`assemble.py` writes the notebooks without outputs; `execute.py` runs them on the
+kernel (`--kernel`, default `pythtb-mc`; `--timeout` per cell, default 900 s) in
+place or into `--outdir`, and tallies PASS/FAIL/errors/figures/captions (exit 0
+only when green; `--tally-only` just counts what the files already contain).
+Both print a one-line summary by default (`--verbose` for detail, `--quiet` for
+silence) and append an audit record — command line, versions, messages, outcome —
+to `logs/assemble.log` / `logs/execute.log` (`--log-dir` to move it). nbconvert's
+own output goes to `logs/nbconvert-<notebook>.log`.
+
+## 6. Tests
+
+`python -m pytest tests` runs in ~40 s and checks: the environment (pythtb 2.0.x,
+SSH gap, Zak phases, Haldane Chern number, silicon dataset loads); every helper in
+`scripts/pythtb_tools.py` against the physics it came from; the committed
+notebooks (fully executed, 0 FAIL, 0 errors, caption per figure, minimum check
+counts, cells identical to the `build/` sources, kernel pinned, no personal paths);
+the two pythtb 2.0.2 bugs the notebooks work around, as *strict xfails* — if a
+future pythtb fixes them the suite fails loudly so the notebook notes can be retired;
+the docs (every CLI flag documented here and in `AGENTS.md`, README counts equal to
+the executed notebooks, `VERSION` = `CHANGELOG.md` = `CITATION.cff`); and the licence
+files (Apache-2.0 text with its disclaimers, `NOTICE`, the README disclaimer, an
+SPDX header in every Python file).
+
+`python -m pytest tests --run-notebooks` additionally re-executes both notebooks into
+a temporary directory (~3 min; skipped if the kernel is not registered).
+`tests/test_kwant_crosscheck.py` needs an interpreter with both `pythtb` and `kwant`
+and skips otherwise.
+
+## 7. Every feature and every known limitation
+
+**Features (guarantees).**
+- Every numerical claim in both notebooks is checked inline; the suite fails if any check fails.
+- Every figure has an auto-numbered caption; every physical system is drawn before it is computed.
+- Notebook text and code are the concatenation of `build/*.py` — reproducible, diff-able, testable.
+- Fixed random seeds (`default_rng(2026)` etc.): outputs are deterministic.
+- The Wannier90 silicon dataset is included with provenance and licence (`data/README.md`).
+- All three PythTB 2.0.2 issues found while writing (Wilson-loop eigenvalue cast,
+  `remove_orb` docstring, fragile upstream test) are documented with workarounds
+  (§7, §9, `docs/02-findings-backlog.md`) and pinned by tests.
+- Build and execute scripts expose all inputs/outputs on the command line and write audit logs.
+
+**Known limitations.**
+- PythTB is pinned to **2.0.2**. Other 2.0.x versions should work; the classic 1.x API is not supported.
+- Verified on Windows 10 / Python 3.12.13 (2026-08-28). Linux/macOS are exercised only by the CI workflow (`.github/workflows/tests.yml`) once the repository is on GitHub.
+- The Kwant cross-check (exercise IV.1) is **not** run inside the pythtb environment — Kwant is deliberately absent there. It passes in a separate environment (kwant 1.5.0), see backlog N3.
+- The Part IV comparisons describe Kwant 1.5.0; a future Kwant may close some gaps in the capability matrix.
+- The notebooks are dense-diagonalization only, by design: §24 measures the wall (~N³), Part IV explains the alternatives.
+- The upstream mirror and the literature folder used while writing (`mirror/`, `papers/`) are not distributed — cite-and-link only.
+- Figures are static matplotlib PNGs stored in the notebooks (no interactive widgets), so file sizes are 5.6 MB + 0.9 MB.
+
+## 8. Troubleshooting
+
+| Symptom | Cause / fix |
+|---|---|
+| `Kernel not found: pythtb-mc` | Register the kernel (§3) or select another kernel once; VS Code users: `.vscode/settings.json` points at the conda env |
+| `UnicodeEncodeError: 'charmap'` when running scripts | `set PYTHONIOENCODING=utf-8` (Windows console) |
+| `ComplexWarning` from `wfarray.py` | Upstream bug P1; §9 silences it and shows the workaround |
+| `remove_orb` returns `None` | Upstream docstring bug P2; call `.copy()` first, then `remove_orb` in place |
+| `ZeroDivisionError` in `chern_number`/`axion_angle` | You are exactly at a gap closing; shift the parameter grid by half a step (§14, §20) |
+| `FileNotFoundError: data/w90_silicon` | Run from the repository root (paths are relative) |
+| `tests/test_notebooks.py` fails with "differs from build/ sources" | You edited the `.ipynb` directly — re-run `build/assemble.py` and `build/execute.py` |
+
+## 9. Citing
+
+PythTB: S. Coh and D. Vanderbilt, *Python Tight Binding (PythTB)* (2016),
+DOI 10.5281/zenodo.12721315; version 2.0 by T. Cole, S. Coh and D. Vanderbilt
+(https://github.com/pythtb/pythtb). Physics companion: D. Vanderbilt, *Berry Phases
+in Electronic Structure Theory* (Cambridge, 2018). Full reference list for the
+notebooks: §31 of the main notebook.

@@ -1,0 +1,41 @@
+name: tests
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  fast:
+    name: fast suite (${{ matrix.os }}, py${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.12", "3.13"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -r requirements.txt
+      - run: python scripts/verify_pythtb.py
+        env:
+          PYTHONIOENCODING: utf-8
+      - run: python -m pytest tests -q
+        env:
+          PYTHONIOENCODING: utf-8
+
+  notebooks:
+    name: execute both notebooks (ubuntu, py3.12)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements.txt
+      - run: python -m ipykernel install --user --name pythtb-mc --display-name "Python 3.12 (pythtb)"
+      - run: python -m pytest tests -q --run-notebooks
+        env:
+          PYTHONIOENCODING: utf-8

@@ -1,0 +1,27 @@
+{
+  // Interpreter of the dedicated conda env created by install_pythtb_windows.ps1.
+  // If conda lives elsewhere: `conda activate pythtb; python -c "import sys; print(sys.executable)"`
+  // and paste the path here, or Ctrl+Shift+P -> "Python: Select Interpreter".
+  "python.defaultInterpreterPath": "${env:USERPROFILE}\\miniconda3\\envs\\pythtb\\python.exe",
+
+  // Both notebooks are pinned to the registered kernel "pythtb-mc"
+  // ("Python 3.12 (miniconda - pythtb)"); do not let VS Code guess another one.
+  "jupyter.kernels.filter": [],
+  "jupyter.themeMatplotlibPlots": true,
+
+  "notebook.output.wordWrap": false,
+  "notebook.output.scrolling": true,
+  "notebook.output.textLineLimit": 60,
+  "notebook.markup.fontSize": 14,
+
+  "terminal.integrated.defaultProfile.windows": "PowerShell",
+  "python.terminal.activateEnvironment": true,
+  "python.testing.pytestEnabled": true,
+  "python.testing.pytestArgs": ["tests"],
+
+  "files.exclude": {
+    "**/__pycache__": true,
+    "**/.ipynb_checkpoints": true,
+    "**/.pytest_cache": true
+  }
+}

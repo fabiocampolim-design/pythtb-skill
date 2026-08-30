@@ -1,0 +1,11 @@
+# Exact environment the notebooks were executed in (2026-08-28, Python 3.12.13).
+# Only pythtb is hard-pinned: the notebooks document and work around two
+# pythtb 2.0.2 bugs, so a different pythtb needs a re-run of tests/.
+pythtb==2.0.2
+numpy>=2.0,<3          # executed with 2.5.2
+scipy>=1.14            # executed with 1.18.1
+matplotlib>=3.9        # executed with 3.11.1
+jupyter
+ipykernel
+nbconvert>=7
+pytest>=7

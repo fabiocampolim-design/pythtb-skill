@@ -1,0 +1,30 @@
+cff-version: 1.2.0
+message: "If you use this skill or its notebooks, please cite it as below, and cite PythTB itself (see references/ecosystem.md)."
+title: "pythtb-skill: an AI-agent skill, verified toolkit and executed notebooks for PythTB 2.0"
+type: software
+version: "1.0.0"
+date-released: "2026-08-30"
+license: Apache-2.0
+authors:
+  - family-names: Campolim
+    given-names: Fabio
+keywords:
+  - tight-binding
+  - PythTB
+  - Berry phase
+  - topological insulators
+  - Wannier functions
+  - AI-agent skill
+references:
+  - type: software
+    title: "Python Tight Binding (PythTB)"
+    authors:
+      - family-names: Cole
+        given-names: Trey
+      - family-names: Coh
+        given-names: Sinisa
+      - family-names: Vanderbilt
+        given-names: David
+    doi: 10.5281/zenodo.12721315
+    url: https://github.com/pythtb/pythtb
+    license: GPL-3.0-or-later
