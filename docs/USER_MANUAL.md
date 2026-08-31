@@ -191,7 +191,7 @@ and skips otherwise.
 
 **Known limitations.**
 - PythTB is pinned to **2.0.2**. Other 2.0.x versions should work; the classic 1.x API is not supported.
-- Verified on Windows 10 / Python 3.12.13 (2026-08-28). Linux/macOS are exercised only by the CI workflow (`.github/workflows/tests.yml`) once the repository is on GitHub.
+- Verified on Windows 10 / Python 3.12.13 (2026-08-28) and, since 2026-08-31, by CI (`.github/workflows/tests.yml`) on Linux, Windows and macOS × Python 3.12/3.13, including a full notebook re-execution on ubuntu.
 - The Kwant cross-check (exercise IV.1) is **not** run inside the pythtb environment — Kwant is deliberately absent there. It passes in a separate environment (kwant 1.5.0), see backlog N3.
 - The Part IV comparisons describe Kwant 1.5.0; a future Kwant may close some gaps in the capability matrix.
 - The notebooks are dense-diagonalization only, by design: §24 measures the wall (~N³), Part IV explains the alternatives.

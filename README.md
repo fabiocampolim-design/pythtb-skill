@@ -138,7 +138,10 @@ drafts in the study folder next to this repository until they are filed.
 - **Validated:** full execution on Windows 10 / Python 3.12.13 / pythtb 2.0.2
   (2026-08-29); Kwant cross-check of `to_kwant` with kwant 1.5.0 (2026-08-28);
   the upstream test suite run on the same machine (102 pass, 1 platform-fragile).
-- **Untested until CI runs:** Linux/macOS, Python 3.13.
+- **CI-validated 2026-08-31** (first push): Linux, Windows and macOS ×
+  Python 3.12/3.13 — fast suite on all six, plus a full re-execution of both
+  notebooks on ubuntu (130 checks green in 68 s). Formerly listed here as
+  "untested until CI runs".
 - **Planned:** file the three upstream issues; answer upstream #62 (Peierls
   substitution) and #60 (DOS) with the recipes from §21 and exercise IV.2;
   a `hofstadter(p, q)` supercell helper in `pythtb_tools`; interactive 3D
