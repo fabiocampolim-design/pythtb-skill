@@ -661,8 +661,8 @@ window.DECK_CONTENT = {
     "stretch-butterfly": {
       "level": "core", "layout": "fig", "fig": "s21-f2",
       "title": "The Hofstadter butterfly",
-      "lead": "Every eigenvalue of the square lattice at every rational flux <span class='math'>p/q</span> with <span class='math'>q ≤ 32</span>, from <code>set_hop</code> and nothing else. Self-similar at every scale; each gap carries a Chern number.",
-      "notes": "Read the figure: at small flux the Landau-level fan emerges from the band edges (E ≈ ±4t + ħω_c(n + ½)); at φ = ½ the spectrum is symmetric with a Dirac point; the gaps form a fractal. The Chern numbers of the gaps satisfy a Diophantine equation (TKNN 1982 was written about this figure). Q: \"Has this been observed?\" A: Yes — in graphene on hexagonal boron nitride moiré superlattices (2013), where the large moiré cell makes one flux quantum reachable with laboratory fields."
+      "lead": "Every eigenvalue of the square lattice at every rational flux <span class='math'>p/q</span> with <span class='math'>q ≤ 32</span>, from <code>set_hop</code> and nothing else. Nested gaps at every scale; each gap carries a Chern number.",
+      "notes": "Read the figure: at small flux the Landau-level fan emerges from the band edges (E ≈ ±4t + ħω_c(n + ½)); at φ = ½ the spectrum is symmetric with a Dirac point; the gaps nest inside gaps without end (a Cantor-set spectrum). The Chern numbers of the gaps satisfy a Diophantine equation (TKNN 1982 was written about this figure). Q: \"Has this been observed?\" A: Yes — in graphene on hexagonal boron nitride moiré superlattices (2013), where the large moiré cell makes one flux quantum reachable with laboratory fields."
     },
     "stretch-disorder": {
       "level": "core", "layout": "two-figs", "fig": "s22-f1", "fig2": "s22-f2",
@@ -693,7 +693,7 @@ window.DECK_CONTENT = {
       "bullets": [
         "Confined states are the Lieb-lattice localized states of lecture 3 returning in a non-periodic setting: local geometry, not translation symmetry, produces them.",
         "Their fraction is exactly computable (Kohmoto–Sutherland): a macroscopic degeneracy in a system with no symmetry to explain it.",
-        "The remaining states are <em>critical</em>: neither extended nor localized, multifractal."
+        "The remaining states are <em>critical</em>: neither extended nor localized, with power-law scaling at every length."
       ],
       "notes": "Show how the δ-peak is extracted: the integrated DOS has a plateau jump at E = 0 whose height is the confined-state fraction. Q: \"Why bipartite?\" A: Rhombus edges always join a vertex of one parity to the other in the pentagrid construction; bipartite hopping models have E ↔ −E symmetry, and their zero modes are counted by the sublattice imbalance of local clusters."
     },

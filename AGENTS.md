@@ -16,7 +16,7 @@ helper module (`scripts/pythtb_tools.py`), an environment check
 + `scripts/register_watch_task.ps1`), two executed Jupyter notebooks on
 **PythTB 2.0.2** in which every physics claim is checked inline, and an
 undergraduate course (`course/`) whose every figure is a notebook output. Licence
-Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.2.0), history in
+Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.2.1), history in
 `CHANGELOG.md`, citation in `CITATION.cff`.
 
 | Path | Role |

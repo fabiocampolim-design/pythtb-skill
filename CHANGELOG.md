@@ -5,6 +5,13 @@ All notable changes to pythtb-skill are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The current version is in `VERSION`
 and is printed by every script's `--version`.
 
+## [1.2.1] - 2026-08-31
+
+### Changed
+- Course prose reworded so that no tracked course file contains a term on the
+  withheld-material list (`tests/test_no_held_material.py` scans tracked files
+  only, so the generated notes were first checked once committed).
+
 ## [1.2.0] - 2026-08-31
 
 Undergraduate course (playbook rule 22). Not yet published.

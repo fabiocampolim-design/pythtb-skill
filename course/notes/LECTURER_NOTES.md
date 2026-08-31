@@ -300,7 +300,7 @@ The Haldane model already used complex hoppings for local fluxes; here the flux 
 ### The Hofstadter butterfly  `[core]`
 Slide `#stretch-butterfly`; figures `s21-f2` (§21 cell 90).
 
-Read the figure: at small flux the Landau-level fan emerges from the band edges (E ≈ ±4t + ħω_c(n + ½)); at φ = ½ the spectrum is symmetric with a Dirac point; the gaps form a fractal. The Chern numbers of the gaps satisfy a Diophantine equation (TKNN 1982 was written about this figure). Q: "Has this been observed?" A: Yes — in graphene on hexagonal boron nitride moiré superlattices (2013), where the large moiré cell makes one flux quantum reachable with laboratory fields.
+Read the figure: at small flux the Landau-level fan emerges from the band edges (E ≈ ±4t + ħω_c(n + ½)); at φ = ½ the spectrum is symmetric with a Dirac point; the gaps nest inside gaps without end (a Cantor-set spectrum). The Chern numbers of the gaps satisfy a Diophantine equation (TKNN 1982 was written about this figure). Q: "Has this been observed?" A: Yes — in graphene on hexagonal boron nitride moiré superlattices (2013), where the large moiré cell makes one flux quantum reachable with laboratory fields.
 
 ### Anderson localization, one eigenvector at a time  `[core]`
 Slide `#stretch-disorder`; figures `s22-f1` (§22 cell 93), `s22-f2` (§22 cell 94).
