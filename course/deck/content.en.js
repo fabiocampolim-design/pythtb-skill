@@ -44,7 +44,7 @@ window.DECK_CONTENT = {
     {"sec": "berry", "slides": ["berry-charge", "berry-cycle", "berry-flow", "berry-finite", "berry-math"]},
     {"sec": "chern", "slides": ["chern-ingredients", "chern-curvature", "chern-phase", "chern-ribbon", "chern-marker", "chern-math"]},
     {"sec": "z2", "slides": ["z2-inversion", "z2-flow", "z2-edges", "z2-math"]},
-    {"sec": "beyond", "slides": ["beyond-map", "beyond-bbh", "beyond-kitaev", "beyond-weyl-geo", "beyond-weyl", "beyond-axion", "beyond-math"]},
+    {"sec": "beyond", "slides": ["beyond-map", "beyond-bbh-model", "beyond-bbh", "beyond-kitaev-model", "beyond-kitaev", "beyond-weyl-geo", "beyond-weyl", "beyond-axion", "beyond-math"]},
     {"sec": "stretch", "slides": ["stretch-peierls", "stretch-butterfly", "stretch-disorder", "stretch-penrose", "stretch-penrose-spectrum", "stretch-wall", "stretch-math"]},
     {"sec": "limits", "slides": ["limits-list", "limits-bdg", "limits-hubbard", "limits-matrix", "limits-math"]},
     {"sec": "close", "slides": ["limits-close"]}
@@ -576,6 +576,18 @@ window.DECK_CONTENT = {
       },
       "notes": "A map slide: name the four systems, their notebook sections, and the single idea each introduces. Choose depth according to time — each core slide stands alone. Q: \"Are these all realized experimentally?\" A: Weyl semimetals (TaAs, 2015) and 3D TIs (Bi₂Se₃, 2009) unambiguously; quadrupole insulators in metamaterials and photonics; Majorana modes in nanowires remain debated."
     },
+    "beyond-bbh-model": {
+      "level": "core", "layout": "two-figs", "fig": "s17-f1", "fig2": "s17-f2",
+      "title": "The BBH model: two SSH chains crossed",
+      "lead": "Four orbitals per square cell, intracell bonds <span class='math'>γ</span> and intercell bonds <span class='math'>λ</span>, with one negative bond per plaquette — a π flux (left). The bulk bands come in two doubly-degenerate pairs with a full gap (right).",
+      "bullets": [
+        "SSH logic in both directions at once: <span class='math'>λ &gt; γ</span> is the candidate topological phase.",
+        "The π flux per plaquette is essential: it keeps the bands degenerate and the Wannier bands gapped.",
+        "Nothing in these bulk bands betrays the topology — the dipole moment vanishes by symmetry in every direction."
+      ],
+      "notes": "Build the model on the board as two interleaved SSH patterns; the dashed negative bond implements the π flux (product of signs around each plaquette = −1). Emphasize the negative result on purpose: bulk bands and even bulk polarization look completely trivial, which is why a new diagnostic (the nested Wilson loop, next slide) is needed. Q: \"Why the π flux?\" A: Without it the four bands are not doubly degenerate, the Wannier bands touch, and the quadrupole is not quantized — the flux enforces the anticommuting mirror symmetries that protect q_xy."
+    },
+
     "beyond-bbh": {
       "level": "core", "layout": "two-figs", "fig": "s17-f3", "fig2": "s17-f4",
       "title": "Higher-order topology: the quadrupole insulator",
@@ -587,6 +599,18 @@ window.DECK_CONTENT = {
       ],
       "notes": "Present this as SSH squared: the topological phase is λ > γ in both directions, and the four corners are the four ends of two crossed chains. The nested Wilson loop is the Berry phase of the Wannier bands — the same computation applied to the output of itself. Q: \"Why is the corner charge protected?\" A: By the mirror symmetries that pin the Wannier bands at ±¼; break them and the corner charge can flow away."
     },
+    "beyond-kitaev-model": {
+      "level": "core", "layout": "two-figs", "fig": "s18-f1", "fig2": "s18-f2",
+      "title": "Writing pairing as hopping: the BdG trick",
+      "lead": "The physical chain has hopping <span class='math'>t</span> and p-wave pairing <span class='math'>Δ</span> that creates and destroys electron <em>pairs</em> (left, top) — not a hopping at all. Double the orbitals into a particle and a hole copy and it becomes one (left, bottom); the resulting BdG bands match the analytic dispersion exactly (right).",
+      "bullets": [
+        "PythTB never learns about superconductivity: it sees an ordinary two-orbital tight-binding model.",
+        "The price of the trick: every state appears twice, at <span class='math'>E</span> and <span class='math'>−E</span>; only half the spectrum is physical.",
+        "The gap closes at <span class='math'>k = 0</span> when <span class='math'>μ = −2t</span> and at <span class='math'>k = π</span> when <span class='math'>μ = +2t</span> — the boundaries of the topological phase."
+      ],
+      "notes": "Spell the mapping out once: c†c† terms connect the particle sector to the hole sector, so in the doubled basis they look like hoppings between the two copies; hermiticity of the original pairing becomes the particle–hole structure of the doubled matrix. The dashed analytic curve is E(k) = ±sqrt((2t cos k + μ)² + 4Δ² sin²k). Q: \"Is the doubling physical?\" A: No — it is bookkeeping. The physical Hilbert space has half the states; the E and −E eigenvectors describe the same quasiparticle, which is exactly why an E = 0 state can be its own partner (next slide)."
+    },
+
     "beyond-kitaev": {
       "level": "core", "layout": "two-figs", "fig": "s18-f3", "fig2": "s18-f4",
       "title": "Superconductivity smuggled in: the Kitaev chain",
@@ -599,9 +623,9 @@ window.DECK_CONTENT = {
       "notes": "Explain the doubling honestly: the BdG Hamiltonian is a trick to write a quadratic pairing term as a hopping between a particle and a hole orbital; the price is that every state appears twice (E and −E) and only half are physical. The E = 0 states are exceptional — their particle and hole parts coincide. Q: \"Is this the Majorana nanowire?\" A: In spirit: the Rashba–Zeeman wire of lecture 4 proximitized by a superconductor maps onto the Kitaev chain inside its helical gap."
     },
     "beyond-weyl-geo": {
-      "level": "core", "layout": "fig-right", "fig": "s19-f1",
+      "level": "core", "layout": "two-figs", "fig": "s19-f1", "fig2": "s19-f2",
       "title": "Weyl semimetals: monopoles in the Brillouin zone",
-      "lead": "Two bands touch at isolated points in a 3D zone. Each node is a <strong>monopole of Berry curvature</strong>: the flux through any closed surface around it is <span class='math'>±2π</span>. Nodes come in pairs of opposite charge.",
+      "lead": "Two bands touch at isolated points in a 3D zone (left): each node is a <strong>monopole of Berry curvature</strong>, with flux <span class='math'>±2π</span> through any surface around it, and nodes come in pairs of opposite charge. The direct gap along the <span class='math'>k<sub>z</sub></span> axis (right) collapses linearly at <span class='math'>k<sub>z</sub> = ±¼</span> and nowhere else.",
       "bullets": [
         "Gapless by topology, not by fine tuning: a point crossing in 3D cannot be removed by small perturbations (three parameters, three constraints).",
         "The minimal model breaks time reversal <em>or</em> inversion; here a two-orbital model with the nodes at <span class='math'>k<sub>z</sub> = ±¼</span>.",
@@ -621,9 +645,9 @@ window.DECK_CONTENT = {
       "notes": "Dimensional reduction is the through-line of the course: the ribbon from the 2D model (lecture 3), the pump from the parameter (lecture 5), now a family of 2D models from a 3D one. Q: \"Where does the arc end?\" A: At the surface projections of the two nodes, where the sliced Chern number changes and the edge state must disappear into the bulk."
     },
     "beyond-axion": {
-      "level": "core", "layout": "fig-right", "fig": "s20-f2",
+      "level": "core", "layout": "two-figs", "fig": "s20-f1", "fig2": "s20-f2",
       "title": "The axion angle θ",
-      "lead": "The Fu–Kane–Mele model on the diamond lattice, driven through an adiabatic cycle by a staggered Zeeman field. The magnetoelectric angle <span class='math'>θ</span> winds by <span class='math'>2π</span> over the cycle: a <strong>second Chern number</strong> equal to one.",
+      "lead": "The Fu–Kane–Mele model on the diamond lattice at the time-reversal-symmetric point <span class='math'>β = π</span>: gapped bulk bands of a strong topological insulator (left). Driving <span class='math'>β</span> through a full adiabatic cycle winds the magnetoelectric angle <span class='math'>θ</span> by <span class='math'>2π</span> (right): a <strong>second Chern number</strong> equal to one.",
       "bullets": [
         "<span class='math'>θ</span> is the 3D analogue of the polarization Berry phase: an angle, defined mod <span class='math'>2π</span>, quantized to <span class='math'>0</span> or <span class='math'>π</span> by time reversal or inversion.",
         "<span class='math'>θ = π</span> is the strong topological insulator; the surface carries a half-quantized Hall conductance <span class='math'>e<sup>2</sup>/2h</span>.",

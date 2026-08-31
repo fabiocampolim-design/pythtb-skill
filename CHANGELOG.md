@@ -5,6 +5,36 @@ All notable changes to pythtb-skill are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The current version is in `VERSION`
 and is printed by every script's `--version`.
 
+## [1.3.0] - 2026-08-31
+
+Course reworked after Fabio's presentation review: linear navigation, every
+notebook figure, full captions, committed PDF fallback.
+
+### Changed
+- The deck is now **flat**: one slide after another, single-level arrow
+  navigation handled entirely by reveal.js (nothing intercepts the arrow
+  keys). Each lecture opens with a generated **divider slide** (label, name,
+  summary, level-coloured agenda) instead of the old overlay flash that could
+  be cut mid-animation. The navigator is one row (lecture · position · global
+  position, with mouse/Shift+arrow lecture jumps) plus the clickable
+  per-lecture progress bar.
+- Figure captions on the slides are the notebook's **full captions** (with
+  figure number, section and cell), no longer truncated to the first sentence.
+- All **69** notebook figures now appear in the course (was 63): the BBH model
+  and bulk bands, the Kitaev physical-vs-BdG picture and BdG bands, the Weyl
+  gap collapse and the Fu–Kane–Mele bulk bands joined as two new slides
+  (`beyond-bbh-model`, `beyond-kitaev-model`) and two upgraded ones.
+
+### Added
+- `course/slides.pdf` — **committed PDF fallback** of the whole deck (77
+  pages, one per slide, every figure with its full caption), rendered by the
+  new `course/tools/make_slides_pdf.py` (`--index`, `--out`, `--quiet`,
+  `--version`; Playwright) from reveal's print layout; a print stylesheet
+  restores the slide padding reveal drops and hides the navigation chrome.
+- `tests/test_course.py` now requires every provenance figure to be used,
+  checks the flat structure and the PDF fallback (exists, is a PDF, one page
+  per slide).
+
 ## [1.2.1] - 2026-08-31
 
 ### Changed

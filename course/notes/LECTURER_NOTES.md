@@ -259,10 +259,20 @@ Slide `#beyond-map`.
 
 A map slide: name the four systems, their notebook sections, and the single idea each introduces. Choose depth according to time — each core slide stands alone. Q: "Are these all realized experimentally?" A: Weyl semimetals (TaAs, 2015) and 3D TIs (Bi₂Se₃, 2009) unambiguously; quadrupole insulators in metamaterials and photonics; Majorana modes in nanowires remain debated.
 
+### The BBH model: two SSH chains crossed  `[core]`
+Slide `#beyond-bbh-model`; figures `s17-f1` (§17 cell 71), `s17-f2` (§17 cell 71).
+
+Build the model on the board as two interleaved SSH patterns; the dashed negative bond implements the π flux (product of signs around each plaquette = −1). Emphasize the negative result on purpose: bulk bands and even bulk polarization look completely trivial, which is why a new diagnostic (the nested Wilson loop, next slide) is needed. Q: "Why the π flux?" A: Without it the four bands are not doubly degenerate, the Wannier bands touch, and the quadrupole is not quantized — the flux enforces the anticommuting mirror symmetries that protect q_xy.
+
 ### Higher-order topology: the quadrupole insulator  `[core]`
 Slide `#beyond-bbh`; figures `s17-f3` (§17 cell 72), `s17-f4` (§17 cell 73).
 
 Present this as SSH squared: the topological phase is λ > γ in both directions, and the four corners are the four ends of two crossed chains. The nested Wilson loop is the Berry phase of the Wannier bands — the same computation applied to the output of itself. Q: "Why is the corner charge protected?" A: By the mirror symmetries that pin the Wannier bands at ±¼; break them and the corner charge can flow away.
+
+### Writing pairing as hopping: the BdG trick  `[core]`
+Slide `#beyond-kitaev-model`; figures `s18-f1` (§18 cell 76), `s18-f2` (§18 cell 77).
+
+Spell the mapping out once: c†c† terms connect the particle sector to the hole sector, so in the doubled basis they look like hoppings between the two copies; hermiticity of the original pairing becomes the particle–hole structure of the doubled matrix. The dashed analytic curve is E(k) = ±sqrt((2t cos k + μ)² + 4Δ² sin²k). Q: "Is the doubling physical?" A: No — it is bookkeeping. The physical Hilbert space has half the states; the E and −E eigenvectors describe the same quasiparticle, which is exactly why an E = 0 state can be its own partner (next slide).
 
 ### Superconductivity smuggled in: the Kitaev chain  `[core]`
 Slide `#beyond-kitaev`; figures `s18-f3` (§18 cell 78), `s18-f4` (§18 cell 79).
@@ -270,7 +280,7 @@ Slide `#beyond-kitaev`; figures `s18-f3` (§18 cell 78), `s18-f4` (§18 cell 79)
 Explain the doubling honestly: the BdG Hamiltonian is a trick to write a quadratic pairing term as a hopping between a particle and a hole orbital; the price is that every state appears twice (E and −E) and only half are physical. The E = 0 states are exceptional — their particle and hole parts coincide. Q: "Is this the Majorana nanowire?" A: In spirit: the Rashba–Zeeman wire of lecture 4 proximitized by a superconductor maps onto the Kitaev chain inside its helical gap.
 
 ### Weyl semimetals: monopoles in the Brillouin zone  `[core]`
-Slide `#beyond-weyl-geo`; figures `s19-f1` (§19 cell 81).
+Slide `#beyond-weyl-geo`; figures `s19-f1` (§19 cell 81), `s19-f2` (§19 cell 82).
 
 Compare with graphene's Dirac point (2D): there a mass term gaps it; in 3D the three Pauli matrices are all used up by the momentum and no mass term exists — the node is stable. Q: "Why must they come in pairs?" A: The total Berry flux out of the whole Brillouin zone (a torus, closed) must vanish, so monopole charges sum to zero: the Nielsen–Ninomiya theorem.
 
@@ -280,7 +290,7 @@ Slide `#beyond-weyl`; figures `s19-f3` (§19 cell 83), `s19-f4` (§19 cell 84).
 Dimensional reduction is the through-line of the course: the ribbon from the 2D model (lecture 3), the pump from the parameter (lecture 5), now a family of 2D models from a 3D one. Q: "Where does the arc end?" A: At the surface projections of the two nodes, where the sliced Chern number changes and the edge state must disappear into the bulk.
 
 ### The axion angle θ  `[core]`
-Slide `#beyond-axion`; figures `s20-f2` (§20 cell 87).
+Slide `#beyond-axion`; figures `s20-f1` (§20 cell 86), `s20-f2` (§20 cell 87).
 
 Position θ as the top of the hierarchy: Berry phase (1D) → Chern number (2D) → axion angle (3D) → second Chern number (4D, here parameter + 3D). The winding of θ over a cycle is the 4D analogue of the Thouless pump. Q: "Is θ measurable?" A: Yes — as a quantized Faraday/Kerr rotation and as the half-integer surface Hall effect in magnetically doped TI films (2017 onward).
 

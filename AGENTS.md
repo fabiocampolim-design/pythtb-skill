@@ -16,7 +16,7 @@ helper module (`scripts/pythtb_tools.py`), an environment check
 + `scripts/register_watch_task.ps1`), two executed Jupyter notebooks on
 **PythTB 2.0.2** in which every physics claim is checked inline, and an
 undergraduate course (`course/`) whose every figure is a notebook output. Licence
-Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.2.1), history in
+Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.3.0), history in
 `CHANGELOG.md`, citation in `CITATION.cff`.
 
 | Path | Role |
@@ -35,9 +35,11 @@ Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.2.1), history in
 | `build/nbbuild.py`, `build/buildlog.py` | cell/notebook writer (`KERNELSPEC`); audit logger |
 | `course/deck/content.en.js` | **source of truth for the course**: sections, stacks (slide order), slides (level intro/core/math, layout, figure keys, notes with Q/A), glossary; strict JSON after `window.DECK_CONTENT =` |
 | `course/tools/extract_figures.py` | notebook PNG outputs → `course/deck/figs/sNN-fK.png` + `provenance.json` (section, cell, figure number, caption, SHA-256); flags `--notebook`, `--outdir`, `--check`, `--quiet`, `--version`; `build_parser()` exposed |
-| `course/tools/build_deck.py` | content → `deck/index.html` (reveal.js 2-D grid), `handout/handout.html` (A4), `notes/LECTURER_NOTES.md`; flags `--content`, `--check`, `--quiet`, `--version`; `build_parser()` exposed |
+| `course/tools/build_deck.py` | content → `deck/index.html` (FLAT reveal.js deck, single-level arrow navigation, one generated divider slide per lecture), `handout/handout.html` (A4), `notes/LECTURER_NOTES.md`; flags `--content`, `--check`, `--quiet`, `--version`; `build_parser()` exposed |
 | `course/tools/verify_deck.py` | optional (Playwright): walk every slide, console errors, geometry overflow, screenshots; flags `--index`, `--screens`, `--no-screens`, `--quiet`, `--version` |
 | `course/tools/build_pptx.py`, `make_handout.py` | optional (Playwright, python-pptx): PPTX with speaker notes (`--index`, `--out`, `--quiet`, `--version`); handout PDF (`--src`, `--out`, `--quiet`, `--version`) |
+| `course/tools/make_slides_pdf.py` | renders the deck's print layout to the **committed** PDF fallback `course/slides.pdf` (one page per slide, all figures, full captions); flags `--index`, `--out`, `--quiet`, `--version`; `build_parser()` exposed |
+| `course/slides.pdf` | the presentation without a browser — regenerate and commit it with every deck change (a test counts its pages) |
 | `course/shared/` | `theme.css`, `nav.js` (DeckNav), `loader.js` (data-t injection, nested keys) + vendored reveal.js 5.2.0 (MIT) |
 | `course/README.md` | syllabus, presenting keys, rebuild commands, content model |
 | `docs/USER_MANUAL.md`, `docs/build_manual.py` | user manual; `build_manual.py --outdir`, `--no-pdf`, `--verbose` → HTML (+ PDF with pandoc/xelatex) |
@@ -82,11 +84,14 @@ issue drafts, mirrors, withheld sections) lives in the parent folder and is
 1. Edit `course/deck/content.en.js` only (never `index.html`, the handout or
    the notes — they are generated and a test compares them). Keep each stack
    ordered intro → core → math; every slide needs `notes` with `Q:` and `A:`.
+   **Every provenance figure must be used** (a test enforces it).
 2. Figures are referenced by provenance key (`s14-f3` = §14, third figure).
    After any notebook re-execution run `python course/tools/extract_figures.py`.
-3. `python course/tools/build_deck.py`, then `python -m pytest tests/test_course.py`.
-4. Optional visual check: `course/tools/verify_deck.py` in an env with Playwright
-   (`course/tools/requirements.txt`) and look at `course/tools/screens/`.
+3. `python course/tools/build_deck.py`, then regenerate the committed PDF
+   fallback in an env with Playwright: `python course/tools/make_slides_pdf.py`
+   (a test counts its pages against the deck).
+4. `python -m pytest tests/test_course.py`; optional visual check:
+   `course/tools/verify_deck.py` and look at `course/tools/screens/`.
 
 ### Add a helper to `scripts/pythtb_tools.py`
 Extract it from a notebook cell that already has a passing check; add a test in
@@ -119,7 +124,7 @@ Bump `VERSION`, add the `CHANGELOG.md` section, update `CITATION.cff`
 | `test_upstream_bugs.py` | the two pythtb 2.0.2 bugs the notebooks work around: the workaround passes, the bug itself is a **strict xfail** (XPASS = upstream fixed it → retire the notes) | pythtb |
 | `test_notebooks.py` | committed notebooks: 0 FAIL / 0 error / 0 unexecuted, caption == figure count, minimum PASS counts, cells identical to `build/` sources, kernel pinned, no personal paths or private codenames. `--run-notebooks` re-executes both into a temp dir | pythtb (+ kernel for the slow test) |
 | `test_kwant_crosscheck.py` | exercise IV.1 completed: PythTB→Kwant exporter reproduces spectra and positions | pythtb **and** kwant |
-| `test_course.py` | the course: content strict JSON, every slide listed once with level/layout/notes+Q/A, intro→core→math per stack, every shown figure byte-identical to the notebook output with provenance (`extract_figures --check`), generated deck/handout/notes fresh (`build_deck --check`), every `data-t` key resolves, reveal.js licence + NOTICE, SPDX, `--version` of the five tools | — |
+| `test_course.py` | the course: content strict JSON, every slide listed once with level/layout/notes+Q/A, intro→core→math per stack, **every** notebook figure used and byte-identical to the notebook output (`extract_figures --check`), generated deck/handout/notes fresh (`build_deck --check`), a divider per lecture, every `data-t` key resolves, the committed `course/slides.pdf` with one page per slide, reveal.js licence + NOTICE, SPDX, `--version` of the six tools | — |
 | `test_docs_guard.py` | every CLI flag of every script appears in this file and the manual; README/manual counts equal the executed notebooks' tallies; `VERSION` = `CHANGELOG` = `CITATION.cff` | — |
 | `test_license.py` | Apache-2.0 `LICENSE` with disclaimers, `NOTICE`, README `## Licence` + `### Disclaimer`, SPDX header in every `.py` | — |
 | `test_no_held_material.py` | no tracked text file contains a token whose hash is listed in `tests/held_terms.txt` (material withheld from publication) | git |

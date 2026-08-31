@@ -3,17 +3,21 @@
 """Generate the course deliverables from one content file.
 
 ``course/deck/content.en.js`` (strict JSON after ``window.DECK_CONTENT =``)
-is the single source of truth: sections, the order of slides in each vertical
-stack, each slide's level (intro -> core -> math), layout, figure keys and
-lecturer notes. This script writes
+is the single source of truth: sections (lectures), the order of slides in
+each lecture, each slide's level (intro -> core -> math), layout, figure keys
+and lecturer notes. This script writes
 
-    course/deck/index.html          reveal.js 2-D grid (one <section> stack per lecture)
+    course/deck/index.html          FLAT reveal.js deck: one slide after another
+                                    (single-level arrow navigation), with a
+                                    generated divider slide opening each lecture
     course/handout/handout.html     A4 companion handout (syllabus, key ideas, glossary)
     course/notes/LECTURER_NOTES.md  every slide's notes with its anticipated question
 
 Figures are referenced by provenance key (``s14-f3``) and resolved against
-``course/deck/figs/provenance.json`` written by ``extract_figures.py``; the
-caption under each figure is the notebook's own caption.
+``course/deck/figs/provenance.json`` written by ``extract_figures.py``; every
+figure carries the notebook's own full caption plus its figure number,
+section and cell. The committed PDF fallback (``course/slides.pdf``) is
+rendered from index.html by ``make_slides_pdf.py``.
 
 Usage (from pythtb-skill/):
     python course/tools/build_deck.py             # write all three
@@ -27,7 +31,7 @@ import os
 import re
 import sys
 
-__version__ = "1.2.1"
+__version__ = "1.3.0"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 COURSE = os.path.abspath(os.path.join(HERE, ".."))
@@ -72,27 +76,22 @@ def ordered_slides(deck):
             yield stack["sec"], sid, deck["slides"][sid]
 
 
+def strip_tags(s):
+    return re.sub(r"<[^>]+>", "", s)
+
+
 # ------------------------------------------------------------------- deck ---
 
-def short_caption(text, limit=170):
-    """First sentence of a notebook caption (the slide shows this; the full
-    caption stays in the image's alt text, the handout and the notes)."""
-    m = re.match(r"(.+?[.!?])(\s|$)", text)
-    first = m.group(1) if m else text
-    if len(first) > limit:
-        first = first[:limit].rsplit(" ", 1)[0] + " …"
-    return first
-
-
 def figure_block(key, prov, extra_class=""):
-    """<figure> for a provenance key; the caption comes from the notebook."""
+    """<figure> for a provenance key; the full notebook caption travels with it."""
     meta = prov[key + ".png"]
     cap = html.escape(meta["caption"])
     fig = f'Figure {meta["figure"]} · ' if meta.get("figure") else ""
     return (f'<figure class="fig {extra_class}">'
-            f'<img src="figs/{key}.png" alt="{cap}" title="{cap}">'
-            f'<figcaption class="caption">{html.escape(short_caption(meta["caption"]))}</figcaption>'
-            f'<div class="src">{fig}notebook §{meta["section"]} · cell {meta["cell"]}</div>'
+            f'<img src="figs/{key}.png" alt="{cap}">'
+            f'<figcaption class="caption">{cap}'
+            f' <span class="src">— {fig}notebook §{meta["section"]} · cell {meta["cell"]}</span>'
+            f'</figcaption>'
             f'</figure>')
 
 
@@ -129,7 +128,7 @@ def syllabus_block(deck):
     return '<ul class="syllabus">' + "".join(items) + "</ul>"
 
 
-def render_slide(deck, sid, slide, prov):
+def render_slide(deck, sec, sid, slide, prov):
     lay = slide["layout"]
     level = slide["level"]
     assert lay in LAYOUTS, (sid, lay)
@@ -163,15 +162,39 @@ def render_slide(deck, sid, slide, prov):
                 + figure_block(slide["fig2"], prov) + "</div>" + bullets_block(sid, slide, "small"))
     elif lay == "table":
         body = T + lead + table_block(sid, slide)
-    return (f'      <section id="{sid}" data-level="{level}">\n        {body}\n'
+    return (f'      <section id="{sid}" data-sec="{sec}" data-level="{level}">\n'
+            f'        {body}\n'
             f'        <aside class="notes" data-notes="{sid}"></aside>\n      </section>\n')
 
 
+def render_divider(deck, stack):
+    """A real slide that opens a lecture: label, name, summary, agenda.
+
+    Dividers replace the old overlay flash — they are ordinary slides, so
+    navigation is never interrupted by an animation."""
+    sec = deck["sections"][stack["sec"]]
+    agenda = "".join(
+        f'<li class="lv-{deck["slides"][sid]["level"]}">'
+        f'{html.escape(strip_tags(deck["slides"][sid]["title"]))}</li>'
+        for sid in stack["slides"])
+    return (f'      <section id="div-{stack["sec"]}" data-sec="{stack["sec"]}" class="divider-slide">\n'
+            f'        <p class="kicker">{html.escape(sec["lecture"])} · notebook {html.escape(sec["notebook"])}</p>\n'
+            f'        <h1>{html.escape(sec["name"])}</h1>\n'
+            f'        <p class="hero-sub">{html.escape(sec["summary"])}</p>\n'
+            f'        <ol class="agenda">{agenda}</ol>\n'
+            f'        <aside class="notes">Divider — one breath: say in a sentence where the '
+            f'previous lecture ended and what this one adds. The list mirrors the slide order; '
+            f'colours mark intro / core / math.</aside>\n'
+            f'      </section>\n')
+
+
 def render_index(deck, prov):
-    stacks = []
-    for stack in deck["stacks"]:
-        inner = "".join(render_slide(deck, sid, deck["slides"][sid], prov) for sid in stack["slides"])
-        stacks.append(f'      <section data-sec="{stack["sec"]}">\n{inner}      </section>\n')
+    out = []
+    for i, stack in enumerate(deck["stacks"]):
+        if i > 0 and deck["sections"][stack["sec"]].get("lecture"):
+            out.append(render_divider(deck, stack))
+        for sid in stack["slides"]:
+            out.append(render_slide(deck, stack["sec"], sid, deck["slides"][sid], prov))
     title = html.escape(deck["deckTitle"])
     return f"""<!doctype html>
 <!-- SPDX-License-Identifier: Apache-2.0 | Copyright 2026 Fabio Campolim
@@ -188,7 +211,7 @@ def render_index(deck, prov):
 <body>
   <div class="reveal">
     <div class="slides">
-{"".join(stacks)}    </div>
+{"".join(out)}    </div>
   </div>
   <script src="../shared/reveal/dist/reveal.js"></script>
   <script src="../shared/reveal/plugin/notes/notes.js"></script>
@@ -199,7 +222,7 @@ def render_index(deck, prov):
     Reveal.initialize({{
       width: 1920, height: 1080, margin: 0.02,
       hash: true, progress: false, center: false, controls: false,
-      transition: "fade", navigationMode: "linear",
+      transition: "fade", transitionSpeed: "fast",
       plugins: [RevealNotes]
     }}).then(function () {{ DeckNav.init(Reveal); }});
   </script>
@@ -209,10 +232,6 @@ def render_index(deck, prov):
 
 
 # ---------------------------------------------------------------- handout ---
-
-def strip_tags(s):
-    return re.sub(r"<[^>]+>", "", s)
-
 
 def render_handout(deck, prov):
     secs = []
@@ -279,7 +298,8 @@ def render_handout(deck, prov):
 <p class="sub">{html.escape(deck["deckSubtitle"])} · companion handout · {html.escape(deck["author"])} · {html.escape(deck["edition"])}</p>
 <p>Every figure in the lectures is produced by a cell of <code>PythTB_Theory_and_Practice.ipynb</code> (pythtb-skill);
 the exercises for each Part, with solutions, are in <code>PythTB_Exercises_Solutions.ipynb</code>. Each lecture runs from
-a picture (intro) through the physics (core) to the equations (math); stop where your course stops.</p>
+a picture (intro) through the physics (core) to the equations (math); stop where your course stops. The slides are
+<code>course/deck/index.html</code> (any browser, offline) with a PDF fallback at <code>course/slides.pdf</code>.</p>
 <h2>Syllabus</h2>
 <table class="syl"><tr><th>Lecture</th><th>Title</th><th>Notebook</th><th>Summary</th></tr>
 {"".join(f"<tr><td>{html.escape(deck['sections'][s['sec']]['lecture'])}</td><td>{html.escape(deck['sections'][s['sec']]['name'])}</td><td>{html.escape(deck['sections'][s['sec']]['notebook'])}</td><td>{html.escape(deck['sections'][s['sec']]['summary'])}</td></tr>" for s in lectures(deck))}
@@ -363,7 +383,9 @@ def main(argv=None):
         return 1 if stale else 0
     if not a.quiet:
         n = sum(len(s["slides"]) for s in deck["stacks"])
-        print(f"ok: {len(lectures(deck))} lectures, {len(deck['stacks'])} stacks, {n} slides")
+        d = sum(1 for i, s in enumerate(deck["stacks"])
+                if i > 0 and deck["sections"][s["sec"]].get("lecture"))
+        print(f"ok: {len(lectures(deck))} lectures, {n} slides + {d} dividers (flat, linear)")
     return 0
 
 

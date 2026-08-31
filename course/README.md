@@ -1,22 +1,23 @@
 # Tight-Binding Physics with PythTB — the course
 
 An undergraduate course in ten lectures built on the companion notebook
-`PythTB_Theory_and_Practice.ipynb`. **Every figure on every slide is a figure
-produced by a notebook cell** — the deck shows the notebook's own caption,
-figure number and cell under each image, and a test fails if a figure on disk
-no longer matches the notebook output.
+`PythTB_Theory_and_Practice.ipynb`. **Every figure the notebook generates —
+all 69 — appears in the course, in the slides and in the PDF fallback alike,
+under its full notebook caption** with its figure number and cell; a test
+fails if a figure drifts from the notebook output or goes unused.
 
 ```
 course/
   deck/index.html         the slides (reveal.js, offline; open in a browser)   GENERATED
-  deck/content.en.js      THE SOURCE: sections, slides, levels, figures, notes
+  deck/content.en.js      THE SOURCE: lectures, slide order, levels, figures, notes
   deck/figs/*.png         figures extracted from the notebook + provenance.json  GENERATED
+  slides.pdf              PDF fallback of the whole deck, one page per slide   GENERATED, committed
   handout/handout.html    A4 companion handout (syllabus, key ideas, equations,
                           glossary); handout.pdf via make_handout.py           GENERATED
   notes/LECTURER_NOTES.md every slide's notes with the anticipated question   GENERATED
   shared/                 theme.css, nav.js, loader.js + vendored reveal.js 5.2.0 (MIT)
-  tools/                  extract_figures.py, build_deck.py (stdlib) ·
-                          verify_deck.py, build_pptx.py, make_handout.py (Playwright, optional)
+  tools/                  extract_figures.py, build_deck.py (stdlib) · verify_deck.py,
+                          build_pptx.py, make_handout.py, make_slides_pdf.py (Playwright)
 ```
 
 ## Syllabus
@@ -35,24 +36,26 @@ course/
 | L9 | Stretching PythTB — Peierls phases and the butterfly, Anderson localization, Penrose, the O(N³) wall | §21–24 |
 | L10 | Limits & what next — five things PythTB cannot do, silent wrongness, mean-field Hubbard, PythTB vs Kwant | §25–31 |
 
-Each lecture is one **vertical stack** of slides ordered *intro → core → math*
-(the chip at the top-right of every slide says which): a first-year audience
-stops after the core slides, a fourth-year audience goes on to the equations.
-Every slide has lecturer notes ending with an anticipated student question and
-its answer (`S` opens the speaker view).
+The deck is **flat and linear**: one slide after another in the order of
+understanding, each lecture opened by a divider slide (its label, summary and
+a level-coloured agenda). Within a lecture the slides run *intro → core →
+math* — the chip at the top-right of every slide says which — so a first-year
+audience stops after the core slides and a fourth-year audience goes on to
+the equations. Every slide has lecturer notes ending with an anticipated
+student question and its answer.
 
 ## Presenting
 
-Open `deck/index.html` in any modern browser — no server, no network.
+Open `deck/index.html` in any modern browser — no server, no network. No
+browser at hand? `slides.pdf` is the same deck, one page per slide.
 
 | Key | Action |
 |---|---|
-| `→` / `←`, clicker | next / previous slide (linear through the whole grid) |
-| `Shift+→` / `Shift+←`, bottom-right buttons | jump to the next / previous lecture |
-| bottom-right lower row | next / previous slide within the lecture (restart on ←) |
+| `→` / `←`, clicker, space | next / previous slide — the only navigation there is |
+| `Shift+→` / `Shift+←`, bottom-right buttons | jump to the next / previous lecture divider (optional) |
+| click the progress bar | jump to that lecture |
 | `S` | speaker view with the notes |
 | `Esc` | overview grid |
-| click the progress bar | jump to that lecture |
 
 PowerPoint: `python course/tools/build_pptx.py` writes a `.pptx` with one
 full-bleed screenshot per slide and the notes as editable speaker notes.
@@ -64,14 +67,16 @@ The content file is the only thing to edit. From `pythtb-skill/`:
 ```bash
 python course/tools/extract_figures.py     # notebook outputs -> deck/figs/*.png + provenance.json
 python course/tools/build_deck.py          # content.en.js -> index.html, handout.html, LECTURER_NOTES.md
-python -m pytest tests/test_course.py      # provenance fresh, outputs fresh, every slide well-formed
+python course/tools/make_slides_pdf.py     # deck -> slides.pdf (committed; needs Playwright)
+python -m pytest tests/test_course.py      # provenance fresh, outputs fresh, PDF complete, slides well-formed
 ```
 
-Both stdlib tools accept `--check` (exit 1 when their outputs are stale); the
-suite runs those checks. When the notebook is re-executed (`build/execute.py`)
-the figures must be re-extracted, or `test_course.py` says which ones drifted.
+The stdlib tools accept `--check` (exit 1 when their outputs are stale); the
+suite runs those checks and counts the PDF's pages against the deck. When the
+notebook is re-executed (`build/execute.py`) the figures must be re-extracted
+and the PDF regenerated, or `test_course.py` says what drifted.
 
-Optional tooling (headless Chromium, not needed to present or to run the suite):
+Optional tooling (headless Chromium; `make_slides_pdf.py` needs it too):
 
 ```bash
 python -m pip install -r course/tools/requirements.txt && python -m playwright install chromium
@@ -84,12 +89,13 @@ python course/tools/make_handout.py        # course/handout/handout.pdf (A4)
 
 Strict JSON after `window.DECK_CONTENT =`, so Python and the browser read the
 same file. `sections` (name, lecture label, notebook range, summary),
-`stacks` (the order of slides in each vertical stack), `slides` (per slide:
+`stacks` (the linear order of slides in each lecture), `slides` (per slide:
 `level` ∈ intro/core/math, `layout` ∈ hero · text · syllabus · eq · code ·
 fig · fig-right · fig-left · two-figs · table, `title`, `lead`, `bullets`,
 `eqs`, `code`, `table`, `fig`/`fig2` as provenance keys such as `s14-f3`,
-`notes` with a `Q:`/`A:` pair), `glossary`. Prose may contain HTML; math is
-set by hand with `<span class='math'>` (italic serif) and `<span class='fn'>`
+`notes` with a `Q:`/`A:` pair), `glossary`. The divider slides are generated
+from `sections` — they are not content. Prose may contain HTML; math is set
+by hand with `<span class='math'>` (italic serif) and `<span class='fn'>`
 (roman functions) — no MathJax, so the deck works offline. A second language
 is a second content file with the same keys.
 

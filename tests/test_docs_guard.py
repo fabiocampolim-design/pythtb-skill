@@ -43,6 +43,7 @@ def _flags(parser):
     ("verify_deck", "build_parser"),
     ("build_pptx", "build_parser"),
     ("make_handout", "build_parser"),
+    ("make_slides_pdf", "build_parser"),
 ])
 def test_script_flags_are_documented(module, builder):
     mod = __import__(module)
