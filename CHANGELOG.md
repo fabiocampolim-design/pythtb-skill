@@ -5,6 +5,37 @@ All notable changes to pythtb-skill are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The current version is in `VERSION`
 and is printed by every script's `--version`.
 
+## [1.2.0] - 2026-08-31
+
+Undergraduate course (playbook rule 22). Not yet published.
+
+### Added
+- `course/`: *Tight-Binding Physics with PythTB*, ten lectures (L0–L10) as a
+  reveal.js 2-D grid — one vertical stack per lecture ordered intro → core →
+  math — with an A4 companion handout and lecturer notes (every slide ends with
+  an anticipated question). 65 slides, 63 of the notebook's 69 figures.
+- `course/tools/extract_figures.py`: pulls every PNG output of the executed
+  notebook into `course/deck/figs/` with `provenance.json` (section, cell,
+  figure number, the notebook's own caption, SHA-256); `--check` fails when a
+  figure drifted from the notebook. `--notebook`, `--outdir`, `--quiet`, `--version`.
+- `course/tools/build_deck.py`: generates `deck/index.html`,
+  `handout/handout.html` and `notes/LECTURER_NOTES.md` from the single content
+  file `deck/content.en.js` (strict JSON); `--content`, `--check`, `--quiet`, `--version`.
+- `course/tools/verify_deck.py` (`--index`, `--screens`, `--no-screens`),
+  `build_pptx.py` (`--index`, `--out`), `make_handout.py` (`--src`, `--out`):
+  optional Playwright tooling (`course/tools/requirements.txt`) — headless walk
+  of every slide with overflow/console checks and screenshots, PPTX export with
+  editable speaker notes, A4 PDF of the handout.
+- `course/shared/`: theme, two-row section navigator and content loader (from
+  the author's lecture decks) + vendored reveal.js 5.2.0 (MIT, `NOTICE`).
+- `tests/test_course.py` (14 checks): content well-formed, level ordering per
+  stack, every shown figure byte-identical to the notebook output with
+  provenance, generated outputs fresh, every `data-t` key resolves, licences.
+
+### Changed
+- `tests/test_license.py` scans `course/tools/*.py` too; `tests/test_docs_guard.py`
+  covers the five course tools; CI runs pyflakes over `course/tools` as well.
+
 ## [1.1.0] - 2026-08-31
 
 Weekly upstream watch (playbook rule 23) and CI hardening. Not yet published.

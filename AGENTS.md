@@ -13,9 +13,10 @@ not how to maintain this repository.)
 `pythtb-skill` = an AI-agent skill (`SKILL.md` + `references/`), a verified
 helper module (`scripts/pythtb_tools.py`), an environment check
 (`scripts/verify_pythtb.py`), a weekly upstream watch (`scripts/watch_upstream.py`
-+ `scripts/register_watch_task.ps1`) and two executed Jupyter notebooks on
-**PythTB 2.0.2** in which every physics claim is checked inline. Licence
-Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.1.0), history in
++ `scripts/register_watch_task.ps1`), two executed Jupyter notebooks on
+**PythTB 2.0.2** in which every physics claim is checked inline, and an
+undergraduate course (`course/`) whose every figure is a notebook output. Licence
+Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.2.0), history in
 `CHANGELOG.md`, citation in `CITATION.cff`.
 
 | Path | Role |
@@ -32,6 +33,13 @@ Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.1.0), history in
 | `build/assemble.py` | part modules → `.ipynb` (no outputs); flags `--which`, `--outdir`, `--log-dir`, `--list`, `--verbose`, `--quiet` |
 | `build/execute.py` | execute on kernel `pythtb-mc`, store outputs, tally; flags `--which`, `--indir`, `--outdir`, `--log-dir`, `--kernel`, `--timeout`, `--tally-only`, `--verbose`, `--quiet` |
 | `build/nbbuild.py`, `build/buildlog.py` | cell/notebook writer (`KERNELSPEC`); audit logger |
+| `course/deck/content.en.js` | **source of truth for the course**: sections, stacks (slide order), slides (level intro/core/math, layout, figure keys, notes with Q/A), glossary; strict JSON after `window.DECK_CONTENT =` |
+| `course/tools/extract_figures.py` | notebook PNG outputs → `course/deck/figs/sNN-fK.png` + `provenance.json` (section, cell, figure number, caption, SHA-256); flags `--notebook`, `--outdir`, `--check`, `--quiet`, `--version`; `build_parser()` exposed |
+| `course/tools/build_deck.py` | content → `deck/index.html` (reveal.js 2-D grid), `handout/handout.html` (A4), `notes/LECTURER_NOTES.md`; flags `--content`, `--check`, `--quiet`, `--version`; `build_parser()` exposed |
+| `course/tools/verify_deck.py` | optional (Playwright): walk every slide, console errors, geometry overflow, screenshots; flags `--index`, `--screens`, `--no-screens`, `--quiet`, `--version` |
+| `course/tools/build_pptx.py`, `make_handout.py` | optional (Playwright, python-pptx): PPTX with speaker notes (`--index`, `--out`, `--quiet`, `--version`); handout PDF (`--src`, `--out`, `--quiet`, `--version`) |
+| `course/shared/` | `theme.css`, `nav.js` (DeckNav), `loader.js` (data-t injection, nested keys) + vendored reveal.js 5.2.0 (MIT) |
+| `course/README.md` | syllabus, presenting keys, rebuild commands, content model |
 | `docs/USER_MANUAL.md`, `docs/build_manual.py` | user manual; `build_manual.py --outdir`, `--no-pdf`, `--verbose` → HTML (+ PDF with pandoc/xelatex) |
 | `install_pythtb_windows.ps1` | conda env + kernel installer (`-EnvName -KernelName -PythonVersion -SkipVerify`) |
 | `requirements.txt` | pins (`pythtb==2.0.2`) |
@@ -70,6 +78,16 @@ issue drafts, mirrors, withheld sections) lives in the parent folder and is
    (`test_docs_guard.py` tells you).
 5. Commit the `.py` sources **and** the executed `.ipynb` together.
 
+### Change the course
+1. Edit `course/deck/content.en.js` only (never `index.html`, the handout or
+   the notes — they are generated and a test compares them). Keep each stack
+   ordered intro → core → math; every slide needs `notes` with `Q:` and `A:`.
+2. Figures are referenced by provenance key (`s14-f3` = §14, third figure).
+   After any notebook re-execution run `python course/tools/extract_figures.py`.
+3. `python course/tools/build_deck.py`, then `python -m pytest tests/test_course.py`.
+4. Optional visual check: `course/tools/verify_deck.py` in an env with Playwright
+   (`course/tools/requirements.txt`) and look at `course/tools/screens/`.
+
 ### Add a helper to `scripts/pythtb_tools.py`
 Extract it from a notebook cell that already has a passing check; add a test in
 `tests/test_tools.py`; add it to `selftest()`; document it in `SKILL.md`, the
@@ -101,6 +119,7 @@ Bump `VERSION`, add the `CHANGELOG.md` section, update `CITATION.cff`
 | `test_upstream_bugs.py` | the two pythtb 2.0.2 bugs the notebooks work around: the workaround passes, the bug itself is a **strict xfail** (XPASS = upstream fixed it → retire the notes) | pythtb |
 | `test_notebooks.py` | committed notebooks: 0 FAIL / 0 error / 0 unexecuted, caption == figure count, minimum PASS counts, cells identical to `build/` sources, kernel pinned, no personal paths or private codenames. `--run-notebooks` re-executes both into a temp dir | pythtb (+ kernel for the slow test) |
 | `test_kwant_crosscheck.py` | exercise IV.1 completed: PythTB→Kwant exporter reproduces spectra and positions | pythtb **and** kwant |
+| `test_course.py` | the course: content strict JSON, every slide listed once with level/layout/notes+Q/A, intro→core→math per stack, every shown figure byte-identical to the notebook output with provenance (`extract_figures --check`), generated deck/handout/notes fresh (`build_deck --check`), every `data-t` key resolves, reveal.js licence + NOTICE, SPDX, `--version` of the five tools | — |
 | `test_docs_guard.py` | every CLI flag of every script appears in this file and the manual; README/manual counts equal the executed notebooks' tallies; `VERSION` = `CHANGELOG` = `CITATION.cff` | — |
 | `test_license.py` | Apache-2.0 `LICENSE` with disclaimers, `NOTICE`, README `## Licence` + `### Disclaimer`, SPDX header in every `.py` | — |
 | `test_no_held_material.py` | no tracked text file contains a token whose hash is listed in `tests/held_terms.txt` (material withheld from publication) | git |
@@ -109,7 +128,9 @@ All tests skip (never fail) when a dependency is absent.
 
 ## 5. Hard rules (do not violate)
 
-1. Never edit the `.ipynb` files by hand; `test_notebooks.py` will fail.
+1. Never edit the `.ipynb` files by hand; `test_notebooks.py` will fail. Never edit
+   `course/deck/index.html`, `course/handout/handout.html` or `course/notes/`;
+   `test_course.py` will fail — edit `course/deck/content.en.js` and rebuild.
 2. Never add upstream (PythTB) source code, downloaded literature, personal
    paths, e-mail addresses or private project codenames (tests scan for them).
 3. Never send anything upstream (issues, PRs) from this repository — drafts and
@@ -131,6 +152,13 @@ All tests skip (never fail) when a dependency is absent.
   `part00_intro.py`'s setup cell): `check(label, ok, detail="")`, `caption(text)`,
   `draw_bonds(ax, xy, pairs, ...)`, a seeded `rng = np.random.default_rng(2026)`.
   The exercises notebook defines its own `check`/`caption` in `ex_part1_2.py`.
+- **Course content** (`course/deck/content.en.js`): `{lang, deckTitle, deckSubtitle,
+  author, edition, sections: {key: {name, lecture, notebook, summary}}, stacks:
+  [{sec, slides: [id]}], slides: {id: {level, layout, title, lead?, bullets?[],
+  eqs?[{label, math}], code?, table?{head, rows}, fig?, fig2?, kicker?, sub?, notes}},
+  glossary: [[term, definition]]}`. `lecture` empty = not a lecture (the closing stack).
+- **Figure provenance** (`course/deck/figs/provenance.json`): `{notebook, figures:
+  {"sNN-fK.png": {section, heading, cell, figure, caption, sha256, bytes}}}`.
 - **Audit log** (`logs/<tool>.log`): blocks of `=== <tool> <iso-timestamp>`, `cmd:`,
   `cwd:`, `versions:`, `INFO|WARN|ERROR|DEBUG <msg>` lines, `outcome: rc=<n> wall=<s>`.
 - **Tally** (`build/execute.py:tally(path)`): dict with `cells, code, pass, fail,

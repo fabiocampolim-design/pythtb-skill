@@ -6,9 +6,10 @@
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
 ![license](https://img.shields.io/badge/license-Apache--2.0-green)
 
-**An AI-agent skill, a verified Python toolkit and two fully executed notebooks
-for [PythTB 2.0](https://github.com/pythtb/pythtb), the pure-Python tight-binding
-package behind Vanderbilt's *Berry Phases in Electronic Structure Theory*.**
+**An AI-agent skill, a verified Python toolkit, two fully executed notebooks and
+an undergraduate course for [PythTB 2.0](https://github.com/pythtb/pythtb), the
+pure-Python tight-binding package behind Vanderbilt's *Berry Phases in Electronic
+Structure Theory*.**
 
 This repository packages practical, executed knowledge about PythTB in a form
 that both humans and AI coding agents can use: a skill definition
@@ -52,6 +53,12 @@ map of what PythTB cannot do and how to hand a model to Kwant.
   to run; `PythTB_Exercises_Solutions.ipynb` — 20 worked exercises, **35
   checks, 18 figures**. Every system is drawn before it is computed on; every
   figure has a numbered caption saying what to look at and why.
+- **An undergraduate course** (`course/`) — *Tight-Binding Physics with PythTB*,
+  ten lectures as offline reveal.js slides, an A4 handout and lecturer notes
+  with an anticipated question per slide. Every one of its figures is a figure
+  produced by a notebook cell (caption, figure number and cell shown under it;
+  a test fails if one drifts). Each lecture is a vertical stack ordered
+  intro → core → math, so the same deck serves a first- and a fourth-year audience.
 - **Curated references** — the v1.x → 2.0 API map with every trap confirmed
   by execution, invariant recipes and conventions, the PythTB-vs-Kwant
   capability matrix, and the ecosystem/citing page (`references/`).
@@ -90,6 +97,10 @@ python -m ipykernel install --user --name pythtb-mc --display-name "Python 3.12 
 jupyter lab PythTB_Theory_and_Practice.ipynb    # or just read it on GitHub
 python -m pytest tests                          # test suite (~40 s; no kwant needed)
 ```
+
+The course: open `course/deck/index.html` in a browser (`S` for the speaker
+view, `Shift+←/→` to jump between lectures); syllabus, keys and rebuild
+commands in **[course/README.md](course/README.md)**.
 
 Windows + Miniconda: `powershell -ExecutionPolicy Bypass -File .\install_pythtb_windows.ps1`
 creates the env and kernel in one go. Full instructions, troubleshooting and

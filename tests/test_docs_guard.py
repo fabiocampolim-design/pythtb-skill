@@ -17,6 +17,7 @@ from conftest import ROOT
 
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 sys.path.insert(0, os.path.join(ROOT, "build"))
+sys.path.insert(0, os.path.join(ROOT, "course", "tools"))
 
 
 def _read(*parts):
@@ -37,6 +38,11 @@ def _flags(parser):
     ("pythtb_tools", "build_parser"),
     ("verify_pythtb", "build_parser"),
     ("watch_upstream", "build_parser"),
+    ("extract_figures", "build_parser"),
+    ("build_deck", "build_parser"),
+    ("verify_deck", "build_parser"),
+    ("build_pptx", "build_parser"),
+    ("make_handout", "build_parser"),
 ])
 def test_script_flags_are_documented(module, builder):
     mod = __import__(module)

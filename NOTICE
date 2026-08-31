@@ -22,5 +22,9 @@ data/w90_silicon/ -- Wannier90 output files for bulk silicon, copied from the
 PythTB repository (docs/source/tutorials/silicon_w90), (c) the PythTB authors,
 GPL-3.0-or-later. See data/README.md.
 
+Third-party software vendored for the course slides (course/shared/reveal/):
+reveal.js 5.2.0, Copyright (C) 2011-2024 Hakim El Hattab and reveal.js
+contributors, MIT License (course/shared/reveal/LICENSE).
+
 This project is independent and not affiliated with or endorsed by the PythTB
 authors or Rutgers University.
