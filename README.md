@@ -43,6 +43,10 @@ map of what PythTB cannot do and how to hand a model to Kwant.
   runs the built-in checks.
 - **Environment check** — `scripts/verify_pythtb.py`: five checks (imports,
   SSH gap, Zak phases, Haldane Chern number, silicon dataset) in seconds.
+- **Upstream watch** — `scripts/watch_upstream.py --weekly` reports new
+  releases, issues, pull requests, `main` commits and PyPI versions of
+  PythTB since the previous run (anonymous GitHub/PyPI API, ~5 requests);
+  `scripts/register_watch_task.ps1` schedules it weekly on Windows.
 - **Two executed notebooks.** `PythTB_Theory_and_Practice.ipynb` — 31 sections
   in four parts, **72 inline physics checks, 69 captioned figures**, ~1.5 min
   to run; `PythTB_Exercises_Solutions.ipynb` — 20 worked exercises, **35
@@ -81,6 +85,7 @@ No AI required — the scripts are ordinary Python (3.12+):
 python -m pip install -r requirements.txt
 python scripts/verify_pythtb.py                 # 5 checks -> "Environment OK."
 python scripts/pythtb_tools.py --selftest       # helper checks
+python scripts/watch_upstream.py --weekly       # what changed upstream since last week
 python -m ipykernel install --user --name pythtb-mc --display-name "Python 3.12 (pythtb)"
 jupyter lab PythTB_Theory_and_Practice.ipynb    # or just read it on GitHub
 python -m pytest tests                          # test suite (~40 s; no kwant needed)

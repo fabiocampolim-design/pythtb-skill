@@ -17,8 +17,12 @@ Coh, Vanderbilt and Cole:
    to any agent framework.
 2. **A verified toolkit** — `scripts/pythtb_tools.py` (helpers: `wilson_phases`,
    `z2_from_wcc`, `z2_wcc_flow`, `remove_orb_copy`, `to_kwant`; run
-   `--selftest`, `--version`, `--quiet`) and `scripts/verify_pythtb.py`
-   (5-check environment test; `--data-dir D`, `--quiet`, `--version`).
+   `--selftest`, `--version`, `--quiet`), `scripts/verify_pythtb.py`
+   (5-check environment test; `--data-dir D`, `--quiet`, `--version`) and
+   `scripts/watch_upstream.py` (weekly watch of the upstream GitHub repository
+   and PyPI: `--weekly`, `--snapshot`, `--pull`, `--state-dir`, `--upstream-dir`,
+   `--outdir`, `--log-dir`, `--quiet`, `--version`; scheduled on Windows by
+   `scripts/register_watch_task.ps1`).
 3. **Two Jupyter notebooks** shipped **fully executed** (all outputs, figures and
    check results stored in the files), plus the tooling to rebuild and re-verify them.
 
@@ -129,6 +133,8 @@ notebooks (fully executed, 0 FAIL, 0 errors, caption per figure, minimum check
 counts, cells identical to the `build/` sources, kernel pinned, no personal paths);
 the two pythtb 2.0.2 bugs the notebooks work around, as *strict xfails* — if a
 future pythtb fixes them the suite fails loudly so the notebook notes can be retired;
+the upstream watch (delta/render/pagination helpers, an offline end-to-end weekly
+run, exit code 1 when upstream is unreachable, the scheduler script's dry run);
 the docs (every CLI flag documented here and in `AGENTS.md`, README counts equal to
 the executed notebooks, `VERSION` = `CHANGELOG.md` = `CITATION.cff`); and the licence
 files (Apache-2.0 text with its disclaimers, `NOTICE`, the README disclaimer, an
@@ -151,6 +157,7 @@ and skips otherwise.
   `remove_orb` docstring, fragile upstream test) are documented with workarounds
   (§7, §9, `docs/02-findings-backlog.md`) and pinned by tests.
 - Build and execute scripts expose all inputs/outputs on the command line and write audit logs.
+- A weekly upstream watch (`scripts/watch_upstream.py`) records what changed at github.com/pythtb/pythtb and on PyPI in `docs/watch/YYYY-WW.md` of the study repository; every run writes an audit log.
 
 **Known limitations.**
 - PythTB is pinned to **2.0.2**. Other 2.0.x versions should work; the classic 1.x API is not supported.
@@ -160,6 +167,7 @@ and skips otherwise.
 - The notebooks are dense-diagonalization only, by design: §24 measures the wall (~N³), Part IV explains the alternatives.
 - The upstream mirror and the literature folder used while writing (`mirror/`, `papers/`) are not distributed — cite-and-link only.
 - Figures are static matplotlib PNGs stored in the notebooks (no interactive widgets), so file sizes are 5.6 MB + 0.9 MB.
+- `scripts/register_watch_task.ps1` is Windows Task Scheduler only; on Linux/macOS run `watch_upstream.py --weekly` from cron.
 
 ## 8. Troubleshooting
 

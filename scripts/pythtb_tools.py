@@ -32,7 +32,11 @@ Command line
 """
 
 import argparse
+import datetime
+import importlib
+import json
 import os
+import platform
 import sys
 import warnings
 
@@ -51,6 +55,24 @@ def version():
 
 
 __version__ = version()
+
+
+def audit_log(outdir, argv, extra=None, script="pythtb_tools"):
+    """Playbook rule 12: one JSON log per invocation under ``<outdir>/logs/``.
+
+    Returns the path written. Never raises on a serialisation problem — values
+    that are not JSON fall back to ``str``.
+    """
+    logdir = os.path.join(outdir, "logs")
+    os.makedirs(logdir, exist_ok=True)
+    stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    path = os.path.join(logdir, f"{script}-{stamp}.log")
+    record = {"script": script, "version": __version__, "utc": stamp,
+              "argv": list(argv), "python": sys.version.split()[0],
+              "platform": platform.platform(), "extra": extra or {}}
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(json.dumps(record, indent=2, default=str) + "\n")
+    return path
 
 
 # --------------------------------------------------------------------------- #
@@ -221,7 +243,7 @@ def selftest(verbose=True):
     rep("remove_orb_copy leaves the original untouched", g.norb == 2 and small.norb == 1)
 
     try:
-        import kwant  # noqa: F401
+        importlib.import_module("kwant")
         flake = graphene(delta=0.1, t=-1.0).make_finite(periodic_dirs=[0, 1], num_cells=[4, 4])
         ev_k = np.sort(np.linalg.eigvalsh(to_kwant(flake).finalized().hamiltonian_submatrix()))
         rep("to_kwant reproduces the PythTB spectrum", np.allclose(ev_k, np.sort(flake.solve_ham()), atol=1e-10))

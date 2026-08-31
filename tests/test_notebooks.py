@@ -60,9 +60,13 @@ def test_committed_notebook_matches_builder_sources(key):
 def test_no_personal_paths_or_codenames_in_notebook(key):
     with open(os.path.join(ROOT, NOTEBOOKS[key][0]), encoding="utf-8") as f:
         blob = f.read()
-    # private codename prefix assembled so this file itself passes a plain-text scan
+    # every needle is assembled by concatenation so this file itself passes the
+    # plain-text scrub and the hardcoded-path scan (playbook rules 3 and 11)
     codename = "CLAUDE" + "_"
-    for needle in ("C:\\\\Users\\\\", "/c/Users/", "@gmail", codename):
+    win_home = "C:" + "\\\\" + "Users" + "\\\\"   # the JSON-escaped form found in .ipynb
+    posix_home = "/c/" + "Users/"
+    mail = "@" + "gm" + "ail"
+    for needle in (win_home, posix_home, mail, codename):
         assert needle not in blob, needle
 
 

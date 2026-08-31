@@ -70,10 +70,20 @@ def test_remove_orb_copy():
 
 
 def test_to_kwant_needs_kwant_or_matches():
-    kwant = pytest.importorskip("kwant")  # noqa: F841
+    pytest.importorskip("kwant")
     flake = graphene(delta=0.1, t=-1.0).make_finite(periodic_dirs=[0, 1], num_cells=[4, 4])
     ev = np.sort(np.linalg.eigvalsh(T.to_kwant(flake).finalized().hamiltonian_submatrix()))
     assert np.allclose(ev, np.sort(flake.solve_ham()), atol=1e-10)
+
+
+def test_audit_log_writes_one_json_record(tmp_path):
+    import json
+    path = T.audit_log(str(tmp_path), ["--weekly", "-q"], {"n": 1}, script="probe")
+    assert os.path.dirname(path) == str(tmp_path / "logs") and os.path.basename(path).startswith("probe-")
+    with open(path, encoding="utf-8") as f:
+        rec = json.load(f)
+    assert rec["script"] == "probe" and rec["version"] == T.__version__
+    assert rec["argv"] == ["--weekly", "-q"] and rec["extra"] == {"n": 1} and rec["utc"].endswith("Z")
 
 
 def test_cli_selftest_and_version():

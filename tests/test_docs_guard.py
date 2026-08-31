@@ -36,6 +36,7 @@ def _flags(parser):
 @pytest.mark.parametrize("module,builder", [
     ("pythtb_tools", "build_parser"),
     ("verify_pythtb", "build_parser"),
+    ("watch_upstream", "build_parser"),
 ])
 def test_script_flags_are_documented(module, builder):
     mod = __import__(module)

@@ -12,9 +12,10 @@ not how to maintain this repository.)
 
 `pythtb-skill` = an AI-agent skill (`SKILL.md` + `references/`), a verified
 helper module (`scripts/pythtb_tools.py`), an environment check
-(`scripts/verify_pythtb.py`) and two executed Jupyter notebooks on
+(`scripts/verify_pythtb.py`), a weekly upstream watch (`scripts/watch_upstream.py`
++ `scripts/register_watch_task.ps1`) and two executed Jupyter notebooks on
 **PythTB 2.0.2** in which every physics claim is checked inline. Licence
-Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.0.0), history in
+Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.1.0), history in
 `CHANGELOG.md`, citation in `CITATION.cff`.
 
 | Path | Role |
@@ -23,6 +24,8 @@ Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.0.0), history in
 | `references/api-map.md`, `invariants.md`, `limitations.md`, `ecosystem.md` | distilled, verified reference docs the skill points to |
 | `scripts/pythtb_tools.py` | helpers: `wilson_phases`, `z2_from_wcc`, `z2_wcc_flow`, `remove_orb_copy`, `to_kwant`; CLI `--selftest`, `--quiet`, `--version`; `build_parser()` exposed |
 | `scripts/verify_pythtb.py` | 5-check environment smoke test; CLI `--data-dir`, `--quiet`, `--version`; `build_parser()` exposed |
+| `scripts/watch_upstream.py` | weekly upstream watch of github.com/pythtb/pythtb + PyPI (rule 23): `--weekly` writes `../docs/watch/YYYY-WW.md`, `--snapshot`, `--pull`, `--state-dir`, `--upstream-dir`, `--outdir`, `--log-dir`, `--quiet`, `--version`; exit 1 when unreachable; `build_parser()` exposed |
+| `scripts/register_watch_task.ps1` | Windows Task Scheduler job for the watch (Mondays 08:00): `-Python`, `-Day`, `-At`, `-Remove`, `-DryRun`, `-Version` |
 | `PythTB_Theory_and_Practice.ipynb` | main notebook: Parts I–IV, §1–31, 116 cells, 72 checks, 69 figures |
 | `PythTB_Exercises_Solutions.ipynb` | 20 worked exercises (I.1–IV.4), 44 cells, 35 checks, 18 figures |
 | `build/part*.py`, `build/ex_part*.py` | **source of truth** for the notebook cells (`CELLS` lists) |
@@ -93,7 +96,8 @@ Bump `VERSION`, add the `CHANGELOG.md` section, update `CITATION.cff`
 | File | What it guards | Needs |
 |---|---|---|
 | `test_environment.py` | pythtb importable and 2.0.x; SSH gap; Zak phases differ by π; Haldane Chern; W90 silicon loads | pythtb |
-| `test_tools.py` | every helper in `scripts/pythtb_tools.py` against the physics it came from; `--selftest`/`--version` CLI | pythtb (+ kwant for `to_kwant`) |
+| `test_tools.py` | every helper in `scripts/pythtb_tools.py` against the physics it came from; `audit_log`; `--selftest`/`--version` CLI | pythtb (+ kwant for `to_kwant`) |
+| `test_watch_upstream.py` | delta/render/pagination helpers, an offline end-to-end `--weekly` run, exit 1 on unreachable upstream, the scheduler script's `-DryRun`/`-Version` | none (PowerShell for the last one, else skipped) |
 | `test_upstream_bugs.py` | the two pythtb 2.0.2 bugs the notebooks work around: the workaround passes, the bug itself is a **strict xfail** (XPASS = upstream fixed it → retire the notes) | pythtb |
 | `test_notebooks.py` | committed notebooks: 0 FAIL / 0 error / 0 unexecuted, caption == figure count, minimum PASS counts, cells identical to `build/` sources, kernel pinned, no personal paths or private codenames. `--run-notebooks` re-executes both into a temp dir | pythtb (+ kernel for the slow test) |
 | `test_kwant_crosscheck.py` | exercise IV.1 completed: PythTB→Kwant exporter reproduces spectra and positions | pythtb **and** kwant |
