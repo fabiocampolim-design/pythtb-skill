@@ -39,8 +39,9 @@ def tracked_text_files():
                              text=True, check=True).stdout
         return [os.path.join(top, p) for p in out.split() if os.path.splitext(p)[1] in TEXT_EXT]
     except Exception:  # noqa: BLE001 - no git: fall back to the shipped notebooks
-        paths = ["PythTB_Theory_and_Practice.ipynb", "PythTB_Exercises_Solutions.ipynb"]
-        return [os.path.join(ROOT, p) for p in paths]
+        chapters = os.path.join(ROOT, "chapters")
+        return sorted(os.path.join(chapters, p) for p in os.listdir(chapters)
+                      if os.path.splitext(p)[1] in TEXT_EXT)
 
 
 def offending_tokens(line, hashes):

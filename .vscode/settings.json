@@ -4,7 +4,7 @@
   // and paste the path here, or Ctrl+Shift+P -> "Python: Select Interpreter".
   "python.defaultInterpreterPath": "${env:USERPROFILE}\\miniconda3\\envs\\pythtb\\python.exe",
 
-  // Both notebooks are pinned to the registered kernel "pythtb-mc"
+  // Every chapter notebook (chapters/) is pinned to the registered kernel "pythtb-mc"
   // ("Python 3.12 (miniconda - pythtb)"); do not let VS Code guess another one.
   "jupyter.kernels.filter": [],
   "jupyter.themeMatplotlibPlots": true,

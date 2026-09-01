@@ -1,17 +1,19 @@
 # SPDX-License-Identifier: Apache-2.0
 # Copyright 2026 Fabio Campolim
-"""Execute one or both notebooks top-to-bottom and tally their inline checks.
+"""Execute the chapter notebooks top-to-bottom and tally their inline checks.
 
 This is the project's real regression suite: every physics claim in the
-notebooks prints ``[PASS]``/``[FAIL]``; this script runs the notebook with
-nbconvert on the pinned kernel, stores the outputs (in place by default) and
-counts PASS / FAIL / error outputs. Exit code is non-zero if any FAIL, any
-error output, or an nbconvert failure occurred.
+notebooks prints ``[PASS]``/``[FAIL]``; this script runs each chapter notebook
+(``chapters/*.ipynb``, see ``build/assemble.py``) with nbconvert on the pinned
+kernel, stores the outputs (in place by default) and counts PASS / FAIL /
+error outputs. Exit code is non-zero if any FAIL, any error output, or an
+nbconvert failure occurred.
 
 Usage:
-    python build/execute.py                        # both notebooks, in place
-    python build/execute.py --which main
-    python build/execute.py --outdir out/          # keep the repo copies untouched
+    python build/execute.py                        # every chapter, in place
+    python build/execute.py --which main           # the book chapters only (exercises: --which exercises)
+    python build/execute.py --which 04             # one chapter (keys: assemble.py --list)
+    python build/execute.py --outdir out/          # executed copies into out/chapters/, repo untouched
     python build/execute.py --tally-only           # just count what is already stored
     python build/execute.py --kernel pythtb-mc --timeout 900 -v
 
@@ -31,11 +33,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.normpath(os.path.join(HERE, ".."))
 sys.path.insert(0, HERE)
 from buildlog import AuditLog  # noqa: E402
-
-NOTEBOOKS = {
-    "main": "PythTB_Theory_and_Practice.ipynb",
-    "exercises": "PythTB_Exercises_Solutions.ipynb",
-}
+from assemble import BY_KEY, CHAPTERS_DIR, select  # noqa: E402
 
 
 def tally(path):
@@ -49,8 +47,8 @@ def tally(path):
             continue
         t["code"] += 1
         outs = c.get("outputs", [])
-        if not outs and "".join(c["source"]).strip():
-            t["unexecuted"] += 1
+        if c.get("execution_count") is None and "".join(c["source"]).strip():
+            t["unexecuted"] += 1          # executed cells carry a count even when silent
         for o in outs:
             if o.get("output_type") == "error":
                 t["errors"] += 1
@@ -67,8 +65,22 @@ def tally(path):
     return t
 
 
+def tally_series(paths):
+    """Sum the tallies of several notebooks (a series of chapters)."""
+    total = None
+    for p in paths:
+        t = tally(p)
+        if total is None:
+            total = t
+            continue
+        for k, v in t.items():
+            total[k] = total[k] + v
+    return total
+
+
 def run_nbconvert(src, dst, kernel, timeout, log_dir):
     if os.path.abspath(src) != os.path.abspath(dst):
+        os.makedirs(os.path.dirname(os.path.abspath(dst)), exist_ok=True)
         shutil.copyfile(src, dst)
     cmd = [sys.executable, "-m", "nbconvert", "--to", "notebook", "--execute",
            "--inplace", dst, f"--ExecutePreprocessor.kernel_name={kernel}",
@@ -84,10 +96,12 @@ def run_nbconvert(src, dst, kernel, timeout, log_dir):
 def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0],
                                  formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--which", choices=["main", "exercises", "all"], default="all")
-    ap.add_argument("--indir", default=ROOT, help="where the source notebooks are (default: repo root)")
+    ap.add_argument("--which", default="all",
+                    help="all (default), main, exercises, or one chapter key")
+    ap.add_argument("--indir", default=ROOT,
+                    help="repository root holding chapters/ (default: this repository)")
     ap.add_argument("--outdir", default=None,
-                    help="write executed copies here instead of in place")
+                    help="write executed copies under <outdir>/chapters/ instead of in place")
     ap.add_argument("--log-dir", default=None, help="default: <outdir or indir>/logs")
     ap.add_argument("--kernel", default="pythtb-mc")
     ap.add_argument("--timeout", type=int, default=900, help="per-cell timeout in seconds")
@@ -102,11 +116,13 @@ def main(argv=None):
     os.makedirs(outdir, exist_ok=True)
     log_dir = args.log_dir or os.path.join(outdir, "logs")
     log = AuditLog("execute", outdir, log_dir, verbose=args.verbose, quiet=args.quiet)
-    which = list(NOTEBOOKS) if args.which == "all" else [args.which]
     rc = 0
-    for key in which:
-        src = os.path.join(args.indir, NOTEBOOKS[key])
-        dst = os.path.join(outdir, NOTEBOOKS[key])
+    t_all = time.time()
+    totals = {}
+    for key in select(args.which):
+        ch = BY_KEY[key]
+        src = os.path.join(args.indir, CHAPTERS_DIR, ch.file)
+        dst = os.path.join(outdir, CHAPTERS_DIR, ch.file)
         if not os.path.exists(src):
             log.error(f"missing {src}")
             rc = 1
@@ -114,21 +130,24 @@ def main(argv=None):
         if not args.tally_only:
             t0 = time.time()
             code, logfile = run_nbconvert(src, dst, args.kernel, args.timeout, log_dir)
-            log.info(f"{NOTEBOOKS[key]}: nbconvert rc={code} in {time.time() - t0:.0f}s "
-                     f"(log: {logfile})")
+            log.info(f"{ch.file}: nbconvert rc={code} in {time.time() - t0:.0f}s (log: {logfile})")
             if code != 0:
                 rc = 1
         t = tally(dst)
-        line = (f"{NOTEBOOKS[key]}: {t['cells']} cells ({t['code']} code) | "
-                f"PASS {t['pass']} FAIL {t['fail']} errors {t['errors']} | "
-                f"figures {t['figures']} captions {t['captions']} | "
-                f"unexecuted code cells {t['unexecuted']}")
-        log.info(line)
+        totals.setdefault(ch.series, []).append(t)
+        log.info(f"{ch.file}: {t['cells']} cells ({t['code']} code) | "
+                 f"PASS {t['pass']} FAIL {t['fail']} errors {t['errors']} | "
+                 f"figures {t['figures']} captions {t['captions']} | "
+                 f"unexecuted code cells {t['unexecuted']}")
         for lbl in t["fail_labels"]:
             log.warn(lbl)
         if t["fail"] or t["errors"] or t["unexecuted"]:
             rc = 1
-    log.info("RESULT: " + ("OK" if rc == 0 else "PROBLEMS — see above"))
+    for series, ts in totals.items():
+        log.info(f"{series}: {len(ts)} notebooks | PASS {sum(t['pass'] for t in ts)} "
+                 f"FAIL {sum(t['fail'] for t in ts)} | figures {sum(t['figures'] for t in ts)} "
+                 f"captions {sum(t['captions'] for t in ts)}")
+    log.info(f"RESULT: {'OK' if rc == 0 else 'PROBLEMS — see above'} ({time.time() - t_all:.0f} s)")
     log.close(rc)
     return rc
 

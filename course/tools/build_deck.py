@@ -31,7 +31,7 @@ import os
 import re
 import sys
 
-__version__ = "1.3.0"
+__version__ = "1.4.0"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 COURSE = os.path.abspath(os.path.join(HERE, ".."))
@@ -82,6 +82,12 @@ def strip_tags(s):
 
 # ------------------------------------------------------------------- deck ---
 
+def _chapter_label(meta):
+    """'chapter 4, ' from the provenance's notebook file name (empty if unknown)."""
+    m = re.match(r"PythTB_(\d+)_", meta.get("chapter", ""))
+    return f"chapter {int(m.group(1))}, " if m else ""
+
+
 def figure_block(key, prov, extra_class=""):
     """<figure> for a provenance key; the full notebook caption travels with it."""
     meta = prov[key + ".png"]
@@ -90,7 +96,8 @@ def figure_block(key, prov, extra_class=""):
     return (f'<figure class="fig {extra_class}">'
             f'<img src="figs/{key}.png" alt="{cap}">'
             f'<figcaption class="caption">{cap}'
-            f' <span class="src">— {fig}notebook §{meta["section"]} · cell {meta["cell"]}</span>'
+            f' <span class="src">— {fig}notebook §{meta["section"]} · '
+            f'{_chapter_label(meta)}cell {meta["cell"]}</span>'
             f'</figcaption>'
             f'</figure>')
 

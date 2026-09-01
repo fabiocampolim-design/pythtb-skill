@@ -121,8 +121,8 @@ def test_every_figure_shown_has_notebook_provenance(deck, prov):
 
 
 def test_figures_match_the_executed_notebook():
-    """Every PNG output of the notebook is on disk, byte-identical, with no orphans."""
-    records = list(extract_figures.catalogue(extract_figures.NOTEBOOK))
+    """Every PNG output of the chapter notebooks is on disk, byte-identical, with no orphans."""
+    records = list(extract_figures.catalogue(extract_figures.NOTEBOOKS))
     assert len(records) >= 60
     problems = extract_figures.check(records, extract_figures.FIGDIR)
     assert not problems, "run course/tools/extract_figures.py: " + "; ".join(problems[:5])

@@ -86,7 +86,7 @@ continuum discretizer, no symmetry validation, no interactions**. When the
 task is transport or > 10⁴ sites, export: `pythtb_tools.to_kwant(finite_model)`
 gives a `kwant.Builder` with identical spectrum (one sublattice per orbital —
 never `lat(*position)`). The full capability matrix and the failing-code
-demonstrations: `references/limitations.md` and Part IV of the main notebook.
+demonstrations: `references/limitations.md` and Part IV of the book (`chapters/PythTB_08_What_PythTB_Cannot_Do.ipynb`).
 
 ## Verifying your environment
 

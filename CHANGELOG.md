@@ -5,6 +5,50 @@ All notable changes to pythtb-skill are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The current version is in `VERSION`
 and is printed by every script's `--version`.
 
+## [1.4.0] - 2026-08-31
+
+The book is now one notebook per chapter (`chapters/`), each with its own
+table of contents — the single 5.4 MB notebook crashed viewers.
+
+### Changed
+- `PythTB_Theory_and_Practice.ipynb` (116 cells, 5.4 MB) is replaced by
+  `chapters/PythTB_00_Introduction.ipynb` and 8 chapter notebooks
+  `chapters/PythTB_01_…` – `PythTB_08_…` (one per build part module, the
+  largest under 1 MB); `PythTB_Exercises_Solutions.ipynb` by
+  `chapters/PythTB_Exercises_I-II.ipynb` and `PythTB_Exercises_III-IV.ipynb`.
+  `chapters/README.md` (generated) is the index. Section numbers §1–31,
+  figure numbers and cross-references are unchanged and global to the book.
+- Every notebook is self-contained: a generated header cell (title, position
+  in the book, table of contents with `sec-N` / `ex-X-n` anchors, links to the
+  previous chapter, the index and the next chapter, links to every other
+  chapter), the shared setup cell (now a template — `part00_intro.SETUP_TEMPLATE`,
+  `ex_common.SETUP_TEMPLATE` — with the figure counter offset so numbering
+  continues across chapters, and a `DATA_DIR` that finds `data/` from
+  `chapters/`), the part's cells, and a generated tally cell. Chapters 2, 3
+  and 8 start with a short recap cell rebuilding the model they reused from an
+  earlier chapter (`honeycomb`, `ssh_model`, `haldane`). The hand-written
+  final-tally cells are gone (each chapter tallies itself).
+- `build/assemble.py`: `CHAPTERS` table, `chapter_cells(key)` (the single
+  truth the suite compares against), `--which` accepts a chapter key; writes
+  the index. `build/execute.py`: runs every chapter, tallies per notebook and
+  per series (`tally_series`), `--outdir` mirrors `chapters/`.
+- `course/tools/extract_figures.py` reads all book chapters in order
+  (`--notebook` takes one or more files); `provenance.json` carries
+  `notebooks` (list) and a `chapter` per figure; the deck captions name the
+  chapter next to the cell. Figures, deck, handout, notes and `slides.pdf`
+  regenerated (figure numbers and captions unchanged; the random streams of
+  chapters 7–8 restart from the seed at the chapter, so a few disorder
+  figures differ in detail).
+- Docs (README, AGENTS, manual, SKILL, course README, CI job name) describe
+  the chapter layout; `docs/USER_MANUAL.md` lists every chapter file.
+
+### Added
+- `tests/test_notebooks.py`: per-chapter green/consistency checks, size cap
+  (1.5 MB), header TOC + anchors + resolving navigation links, setup first /
+  green tally last, figure numbers continuous through the book, generated
+  index up to date. `tests/test_docs_guard.py`: README and manual state the
+  number of chapters; manual and AGENTS name every chapter file.
+
 ## [1.3.0] - 2026-08-31
 
 Course reworked after Fabio's presentation review: linear navigation, every

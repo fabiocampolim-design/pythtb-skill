@@ -68,17 +68,31 @@ def test_build_script_flags_are_documented():
 
 
 def test_readme_counts_match_notebooks():
-    from execute import tally
-    main = tally(os.path.join(ROOT, "PythTB_Theory_and_Practice.ipynb"))
-    ex = tally(os.path.join(ROOT, "PythTB_Exercises_Solutions.ipynb"))
+    from assemble import BY_KEY, MAIN_KEYS, EXERCISE_KEYS, outputs
+    from execute import tally_series
+    paths = outputs(ROOT)
+    main = tally_series([paths[k] for k in MAIN_KEYS])
+    ex = tally_series([paths[k] for k in EXERCISE_KEYS])
+    n_chapters = len(MAIN_KEYS) - 1                      # chapter 0 is the introduction
+    assert BY_KEY["00"].title == "Introduction"
     total_checks, total_figs = main["pass"] + ex["pass"], main["figures"] + ex["figures"]
     readme = _read("README.md")
     assert f"{total_checks} inline" in readme, f"README must state {total_checks} inline checks"
     assert f"{total_figs} figures" in readme, f"README must state {total_figs} figures"
     assert f"{main['pass']} inline physics checks" in readme
     assert f"{main['figures']} captioned figures" in readme
+    assert f"{n_chapters} chapter" in readme, f"README must say the book has {n_chapters} chapters"
     manual = _read("docs", "USER_MANUAL.md")
     assert f"{main['pass']} inline physics checks" in manual and f"{ex['pass']} checks" in manual
+    assert f"{n_chapters} chapter" in manual
+
+
+def test_manual_lists_every_chapter_notebook():
+    from assemble import CHAPTERS
+    manual, agents = _read("docs", "USER_MANUAL.md"), _read("AGENTS.md")
+    for c in CHAPTERS:
+        assert c.file in manual, f"{c.file} missing from docs/USER_MANUAL.md"
+        assert c.file in agents, f"{c.file} missing from AGENTS.md"
 
 
 def test_version_consistency():

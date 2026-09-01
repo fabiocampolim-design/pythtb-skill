@@ -1,7 +1,7 @@
 # Tight-Binding Physics with PythTB — the course
 
-An undergraduate course in ten lectures built on the companion notebook
-`PythTB_Theory_and_Practice.ipynb`. **Every figure the notebook generates —
+An undergraduate course in ten lectures built on the companion book of chapter
+notebooks (`chapters/`). **Every figure the notebooks generate —
 all 69 — appears in the course, in the slides and in the PDF fallback alike,
 under its full notebook caption** with its figure number and cell; a test
 fails if a figure drifts from the notebook output or goes unused.

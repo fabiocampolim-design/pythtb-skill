@@ -3,6 +3,23 @@
 from nbbuild import md, code
 
 CELLS = [
+code(r"""
+# recap — the two models this chapter reuses, rebuilt so that it runs on its own:
+# the honeycomb lattice of §4 (chapter 1) and the Haldane factory of §14 (chapter 4)
+from pythtb.models import haldane
+
+def honeycomb(delta, t):
+    '''Honeycomb-lattice model with staggered onsite ±delta and NN hopping t.'''
+    lat = Lattice(lat_vecs=[[1.0, 0.0], [0.5, np.sqrt(3) / 2]],
+                  orb_vecs=[[1/3, 1/3], [2/3, 2/3]], periodic_dirs=[0, 1])
+    m = TBModel(lat)
+    m.set_onsite([-delta, delta])
+    m.set_hop(t, 0, 1, [0, 0])
+    m.set_hop(t, 1, 0, [1, 0])
+    m.set_hop(t, 1, 0, [0, 1])
+    return m
+"""),
+
 
 # ---------------------------------------------------------------- section 25
 md(r"""
@@ -351,17 +368,4 @@ $\Delta_i = g\langle c_i c_{i+1}\rangle$ computed from the BdG eigenvectors, and
 coupling $g_c$ below which superconductivity dies on a 40-site chain.
 """),
 
-code(r"""
-# ---- final tally -------------------------------------------------------------
-elapsed = time.time() - t_notebook_start
-print("=" * 66)
-print(f"physics checks passed : {_CHECKS['pass']}")
-print(f"physics checks failed : {_CHECKS['fail']}")
-print(f"total wall time       : {elapsed/60:.1f} minutes")
-print("=" * 66)
-if _CHECKS["fail"] == 0:
-    print("Every quantitative claim in this notebook was verified in this run.")
-else:
-    print("Some checks FAILED — search the notebook for '[FAIL]'.")
-"""),
 ]

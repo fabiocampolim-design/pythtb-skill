@@ -34,7 +34,7 @@ Derive the Bloch transform on the board: write the Bloch sum |ψ_k⟩ = Σ_R e^{
 _A single orbital per atom, one hopping, and Bloch's theorem give the first band structure — and the first PythTB model._
 
 ### One orbital per atom, one hop per bond  `[intro]`
-Slide `#chain-atoms`; figures `s02-f1` (§2 cell 6).
+Slide `#chain-atoms`; figures `s02-f1` (§2 cell 5).
 
 Start from the hydrogen-molecule picture the students know: two orbitals, bonding and antibonding, split by 2|t|. A chain is the same thing repeated: a continuum of bonding-to-antibonding combinations labelled by k. Q: "Why is t negative?" A: The hopping is the matrix element of a negative potential between two positive s-orbital lobes; the bonding (even) combination is lower in energy, which is what t < 0 encodes.
 
@@ -44,7 +44,7 @@ Slide `#chain-object`.
 Show the code, then ask the class what the matrix H(k) is for this model before running it: a 1×1 matrix, ε0 + t e^{ik} + t e^{-ik}. Emphasize that solve_path returns energies indexed [band, k] in PythTB 2.0 — the reverse of the 1.x convention, and the most common mistake in student code. Q: "What does R = [1] mean in 2D?" A: A vector of integers, one per lattice direction; [1, 0] is the neighbour cell along the first lattice vector.
 
 ### The first band structure  `[core]`
-Slide `#chain-bands`; figures `s02-f2` (§2 cell 7).
+Slide `#chain-bands`; figures `s02-f2` (§2 cell 6).
 
 Read the plot aloud: the horizontal axis is crystal momentum in units of 2π/a, the vertical axis is energy in units of |t|. The band is the set of all energies an electron can have; with one electron per atom it is half-filled and the chain is a metal. Q: "Where are the atoms in this picture?" A: Nowhere — k-space is the Fourier conjugate of the atom positions; a single band means every atom is equivalent.
 
@@ -57,27 +57,27 @@ Do the one-line derivation: apply H to the Bloch sum, use H|n⟩ = ε0|n⟩ + t|
 _Two sites per cell teach dimerization, gap closing, end states and the winding number — the whole of topology in one dimension._
 
 ### Two sites per cell, alternating bonds  `[intro]`
-Slide `#ssh-geometry`; figures `s03-f1` (§3 cell 10).
+Slide `#ssh-geometry`; figures `s03-f1` (§3 cell 9).
 
 This is the Su–Schrieffer–Heeger model. Draw the chain on the board twice with the cell boundary shifted by one bond and ask the class whether the two drawings describe different systems. For the infinite chain they do not; for a finite chain they do (the last cell is either complete or not). Q: "Is this a real material?" A: Polyacetylene: the Peierls distortion makes the C–C bonds alternate, which is why the model was invented in 1979.
 
 ### One symbolic model, three insulators  `[core]`
-Slide `#ssh-bands`; figures `s03-f2` (§3 cell 11).
+Slide `#ssh-bands`; figures `s03-f2` (§3 cell 10).
 
 Insist on the puzzle: the spectra for w = 0.5 and w = 1.5 (with v = 1) look the same after reflection, yet these will turn out to be different phases. Topology lives in wavefunctions, not energies. Q: "How does PythTB store a symbolic hopping?" A: As a callable evaluated at solve time; the model is built once and parameters are supplied per call, which is what makes phase diagrams cheap.
 
 ### The gap closes at exactly one point  `[core]`
-Slide `#ssh-gapmap`; figures `s03-f3` (§3 cell 12).
+Slide `#ssh-gapmap`; figures `s03-f3` (§3 cell 11).
 
 This slide plants the idea of adiabatic continuity: two Hamiltonians are equivalent if you can deform one into the other without closing the gap and without breaking the protecting symmetry. Add an onsite term ±Δ on the two sublattices (breaking chiral symmetry) and the two phases connect — a good exercise. Q: "Why does the gap close at k = π and not elsewhere?" A: Because |v + w e^{ik}| is smallest when e^{ik} = −1; the math slide makes this explicit.
 
 ### Cut the chain: end modes appear  `[core]`
-Slide `#ssh-ends`; figures `s06-f1` (§6 cell 23), `s06-f2` (§6 cell 24).
+Slide `#ssh-ends`; figures `s06-f1` (§6 cell 4), `s06-f2` (§6 cell 5).
 
 Now resolve the puzzle from ssh-bands: the phase with w > v is the one whose finite chain ends on a weak bond, leaving an unpaired orbital at each end. The zero energy is protected by chiral symmetry, not by fine tuning: show that a random chiral-preserving perturbation moves the bulk bands but not the end modes. Q: "Why exactly zero energy?" A: Chiral symmetry maps E → −E; an isolated end state must be its own partner, so E = 0 (until the two ends hybridize, exponentially small in length).
 
 ### Where the electron actually sits: the Wannier function  `[core]`
-Slide `#ssh-wannier`; figures `s13-f1` (§13 cell 53).
+Slide `#ssh-wannier`; figures `s13-f1` (§13 cell 14).
 
 This is the bridge to Berry phases: the Wannier centre is the Berry phase of the occupied band divided by 2π (lecture 5). For the SSH chain, chiral symmetry quantizes it to 0 or ½. Show the two cases in the notebook if time allows. Q: "Is the Wannier function unique?" A: No: a k-dependent phase choice (gauge) changes its shape, but not its centre modulo a lattice vector — that is why the centre, not the shape, is the physical quantity.
 
@@ -90,37 +90,37 @@ Derive d(k) from the 2×2 matrix (off-diagonal element v + w e^{ik} in the atomi
 _Honeycomb Dirac cones, how a sublattice potential gaps them, exactly flat bands, ribbons, supercells and defects._
 
 ### The honeycomb: two sublattices, one hexagonal zone  `[intro]`
-Slide `#graphene-lattice`; figures `s04-f1` (§4 cell 14), `s04-f2` (§4 cell 15).
+Slide `#graphene-lattice`; figures `s04-f1` (§4 cell 13), `s04-f2` (§4 cell 14).
 
 Make the students count: two orbitals per cell, so two bands; one electron per orbital, so the lower band is exactly filled. Whether graphene is a metal or an insulator depends on whether the two bands touch. Q: "Why not a square lattice?" A: Carbon's sp² bonding makes 120° angles; the honeycomb is the geometry, not a choice. The Dirac cones are a consequence of the two-sublattice structure plus symmetry.
 
 ### Dirac cones — and how to gap them  `[core]`
-Slide `#graphene-dirac`; figures `s04-f3` (§4 cell 16), `s04-f4` (§4 cell 16).
+Slide `#graphene-dirac`; figures `s04-f3` (§4 cell 15), `s04-f4` (§4 cell 15).
 
 The crossing is protected by two things together: inversion (A ↔ B) and time reversal. Breaking inversion with Δ gaps it (BN); breaking time reversal gaps it too, but differently — that is the Haldane model of lecture 6. Q: "Why is it called Dirac?" A: Near K the 2×2 Bloch Hamiltonian is v_F (q_x σ_x + q_y σ_y), the massless Dirac equation in two dimensions with the sublattice playing the role of spin.
 
 ### The cone as a surface  `[core]`
-Slide `#graphene-cone`; figures `s04-f5` (§4 cell 17).
+Slide `#graphene-cone`; figures `s04-f5` (§4 cell 16).
 
 This is the picture to keep for the rest of the course: a band touching in 2D is a point, and points are fragile — a gap can open by any symmetry-breaking mass term. Which mass term opens it decides the topology. Q: "Is the cone perfectly circular?" A: Only near the apex; further out the lattice trigonally warps it, visible as the triangular shape of the contours.
 
 ### Exactly flat bands: the Lieb lattice  `[core]`
-Slide `#graphene-flat`; figures `s05-f1` (§5 cell 19), `s05-f2` (§5 cell 20).
+Slide `#graphene-flat`; figures `s05-f1` (§5 cell 18), `s05-f2` (§5 cell 19).
 
 Let the students verify the compact localized state on the board: apply H to the alternating-sign state and show that each corner site receives +t − t = 0. Because there is one such state per cell, they span a whole band at E = 0. Q: "Is the flat band stable?" A: To any perturbation that preserves the bipartite structure, yes; a next-nearest-neighbour hopping bends it.
 
 ### The kagome lattice: flat band meets Dirac cone  `[core]`
-Slide `#graphene-kagome`; figures `s05-f3` (§5 cell 21), `s05-f4` (§5 cell 21).
+Slide `#graphene-kagome`; figures `s05-f3` (§5 cell 20), `s05-f4` (§5 cell 20).
 
 Two motifs from one lattice: the honeycomb's Dirac cone (kagome is the line graph of the honeycomb) and the Lieb lattice's flat band. Ask which is more robust: the quadratic band touching at Γ is protected by the lattice symmetry and the flat band's existence by the ring-state construction. Q: "Why quadratic touching, not linear?" A: At Γ the flat band and the dispersive band belong to a two-dimensional representation; the touching must be even in k by symmetry.
 
 ### Ribbons: finite across, infinite along  `[core]`
-Slide `#graphene-ribbons`; figures `s06-f3` (§6 cell 25), `s06-f4` (§6 cell 26).
+Slide `#graphene-ribbons`; figures `s06-f3` (§6 cell 6), `s06-f4` (§6 cell 7).
 
 Make the SSH connection explicit: for fixed transverse momentum k, a zigzag ribbon is a one-dimensional dimerized chain whose effective v/w ratio depends on k; the edge band exists precisely on the k-interval where that chain is topological (between the projections of K and K'). This is the first example of dimensional reduction, which returns in the Weyl lecture. Q: "Why is the edge band exactly flat?" A: Chiral symmetry at E = 0 plus the k-dependent SSH argument; any chiral-breaking term (next-nearest hopping) bends it.
 
 ### Supercells and defects  `[core]`
-Slide `#graphene-supercell`; figures `s07-f1` (§7 cell 28), `s07-f2` (§7 cell 29).
+Slide `#graphene-supercell`; figures `s07-f1` (§7 cell 9), `s07-f2` (§7 cell 10).
 
 Two mechanical tools with one lesson: PythTB has no notion of 'a defect', only of unit cells, so anything non-periodic is built as a big periodic cell. Note the numerical cost — a 30×30 supercell is a 1800×1800 dense matrix, foreshadowing lecture 9. Q: "Where does the vacancy state live?" A: On the sublattice opposite to the removed atom, decaying as 1/r: a zero mode of a bipartite lattice with one more A than B site.
 
@@ -133,32 +133,32 @@ Write f(k) explicitly with δ_j the three nearest-neighbour vectors and evaluate
 _Spinful models with Rashba and Zeeman terms, the simple cubic crystal and its density of states, and real silicon from Wannier90._
 
 ### Spin, natively  `[intro]`
-Slide `#spin3d-spin`; figures `s08-f1` (§8 cell 31).
+Slide `#spin3d-spin`; figures `s08-f1` (§8 cell 12).
 
 This is the first place the eigenvectors have internal structure students can visualize (spin). Keep the story concrete: an InSb nanowire in a magnetic field, the platform for the Majorana experiments of the 2010s; add superconductivity (lecture 8) and you have the proposal. Q: "Why does Rashba shift the bands rather than split them at fixed k?" A: The term is odd in k (α σ_y k): it acts like a momentum-dependent magnetic field, zero at k = 0.
 
 ### Spin–momentum locking  `[core]`
-Slide `#spin3d-texture`; figures `s08-f2` (§8 cell 32), `s08-f3` (§8 cell 33).
+Slide `#spin3d-texture`; figures `s08-f2` (§8 cell 13), `s08-f3` (§8 cell 14).
 
 Locking is the mechanism that makes edge states of topological insulators robust (lecture 7): if spin and direction are tied, a non-magnetic impurity cannot reverse the motion. Q: "Where does the texture go when B → 0?" A: ⟨σ_z⟩ vanishes everywhere; the two bands become pure ±σ_y eigenstates and cross at k = 0 — the gap needs both ingredients.
 
 ### Three dimensions: the simple cubic crystal  `[core]`
-Slide `#spin3d-cubic`; figures `s11-f1` (§11 cell 43), `s11-f2` (§11 cell 44).
+Slide `#spin3d-cubic`; figures `s11-f1` (§11 cell 4), `s11-f2` (§11 cell 5).
 
 Use this slide to normalize 3D: the same object model, one more lattice vector. The path labels follow the cubic convention (X = (½,0,0), M = (½,½,0), R = (½,½,½) in reduced coordinates). Q: "Why is the band so simple?" A: Separability: with only axis-aligned hops E is a sum of three independent 1D dispersions; any diagonal hop couples the directions.
 
 ### The density of states and its van Hove kinks  `[core]`
-Slide `#spin3d-dos`; figures `s11-f3` (§11 cell 45).
+Slide `#spin3d-dos`; figures `s11-f3` (§11 cell 6).
 
 The DOS is the first quantity that requires a mesh rather than a path — a good moment to introduce solve_mesh and k-point convergence (double the mesh, compare the histogram). Q: "Why 216 000?" A: 60³ points; the histogram noise scales as the inverse square root of the count per bin, and the students can see it in the wiggles.
 
 ### A real material: silicon in the diamond structure  `[core]`
-Slide `#spin3d-silicon`; figures `s12-f1` (§12 cell 47).
+Slide `#spin3d-silicon`; figures `s12-f1` (§12 cell 8).
 
 Position this as the answer to 'is tight binding an approximation?': done this way it is a controlled one, with the hoppings extracted from a converged first-principles calculation and truncated at a chosen distance. Q: "What is Wannier90?" A: A code that takes Bloch states from a DFT program and finds the unitary mixing that makes them maximally localized — lecture 2's Wannier function at industrial scale.
 
 ### Hoppings decay; truncate and compare  `[core]`
-Slide `#spin3d-silicon-bands`; figures `s12-f2` (§12 cell 48), `s12-f3` (§12 cell 49).
+Slide `#spin3d-silicon-bands`; figures `s12-f2` (§12 cell 9), `s12-f3` (§12 cell 10).
 
 This is the quality-control loop of real tight-binding work: extract, truncate, compare, repeat. Ask the students which bands they would trust for a transport calculation and why. Q: "Why are the conduction bands worse?" A: The Wannierization window was chosen for the valence manifold; conduction states are less localized and leak out of the frozen window.
 
@@ -171,22 +171,22 @@ Two derivations: (1) diagonalize the 2×2 matrix at fixed k (it is a spin in an 
 _The Berry phase as the position of charge, polarization as a Wannier centre, and the Thouless pump as a quantized flow._
 
 ### Where is the electron's charge?  `[intro]`
-Slide `#berry-charge`; figures `s09-f1` (§9 cell 36).
+Slide `#berry-charge`; figures `s09-f1` (§9 cell 17).
 
 Set up the modern theory of polarization in one sentence: polarization is a Berry phase. Historically the puzzle was that the dipole moment of an infinite periodic charge density is ill-defined; the resolution (King-Smith and Vanderbilt, 1993) was to use the phases of the Bloch states, which is what the rest of this lecture computes. Q: "Why is the absolute value not physical?" A: Shifting the cell boundary by one lattice vector moves the 'charge per cell' by e·a — polarization is defined modulo a quantum.
 
 ### The Rice–Mele cycle  `[core]`
-Slide `#berry-cycle`; figures `s10-f1` (§10 cell 39).
+Slide `#berry-cycle`; figures `s10-f1` (§10 cell 20).
 
 Draw the (v−w, Δ) plane and the four cardinal points of the loop: pure SSH trivial, staggered potential, SSH topological, opposite potential. The gapless point at the centre is the metal of lecture 2. Q: "What if the loop does not enclose the origin?" A: The pumped charge is zero; the two points on the loop with the same parameters are connected without winding — a good exercise to run in the notebook.
 
 ### The Wannier centre winds once per cycle  `[core]`
-Slide `#berry-flow`; figures `s10-f2` (§10 cell 40).
+Slide `#berry-flow`; figures `s10-f2` (§10 cell 21).
 
 This figure is the Thouless pump: the vertical axis is the position of the charge in units of a, the horizontal axis the pump parameter. The net displacement over one period is quantized because at λ = 0 and λ = 2π the Hamiltonian is the same and the centre must return to itself modulo a lattice vector. Q: "Can the number be 2?" A: Yes, with a loop that winds twice, or for a model with a different geometry; the integer is a Chern number in the (k, λ) torus.
 
 ### The pump seen from the ends  `[core]`
-Slide `#berry-finite`; figures `s10-f3` (§10 cell 41).
+Slide `#berry-finite`; figures `s10-f3` (§10 cell 22).
 
 Laughlin's argument in miniature: charge transported through the bulk appears as a level crossing the gap at the edge. Point to the direction of the flow at the two ends (opposite). Q: "Does the pump work at any speed?" A: No — adiabatic means slow compared with the gap; otherwise the electron can be excited across the gap and the quantization is lost.
 
@@ -199,27 +199,27 @@ Derive the discrete Berry phase: write the continuum expression as a limit of �
 _The Haldane model: Berry curvature, the Chern number, the phase diagram, chiral edge states and a real-space marker._
 
 ### Haldane's trick: complex hoppings, no magnetic field  `[intro]`
-Slide `#chern-ingredients`; figures `s14-f1` (§14 cell 56).
+Slide `#chern-ingredients`; figures `s14-f1` (§14 cell 3).
 
 Historical framing: in 1988 Haldane asked whether the quantum Hall effect needs a magnetic field or only broken time reversal, and answered with this model. It was realized experimentally in 2013 (magnetic topological insulator films) and 2014 (cold atoms). Q: "Why does a complex hopping break time reversal?" A: Time reversal complex-conjugates the Hamiltonian; e^{iφ} → e^{−iφ} reverses the arrows, so unless φ = 0 or π the model is not invariant.
 
 ### Berry curvature: where the geometry lives  `[core]`
-Slide `#chern-curvature`; figures `s14-f2` (§14 cell 58).
+Slide `#chern-curvature`; figures `s14-f2` (§14 cell 5).
 
 Connect to lecture 5: Ω is the curl of the Berry connection, and integrating it over a closed surface (the torus) gives an integer for the same reason a magnetic monopole's flux is quantized. The valley picture is the key to the phase diagram: each Dirac point contributes ±½ depending on the sign of its mass. Q: "Why is Ω peaked where the gap is small?" A: Curvature ∝ 1/gap²: near a would-be Dirac point the eigenvector rotates fastest with k.
 
 ### The Haldane phase diagram  `[core]`
-Slide `#chern-phase`; figures `s14-f3` (§14 cell 59).
+Slide `#chern-phase`; figures `s14-f3` (§14 cell 6).
 
 Every point of this figure is a full Berry-flux calculation — a good place to talk about cost (a mesh per point) and about the robustness of an integer-valued quantity: the numerics never return 0.7. The boundary is where the gap closes at K or K'. Q: "What happens exactly on the boundary?" A: The gap closes at one valley, C is undefined, and the system is a semimetal with a single Dirac cone — half of graphene.
 
 ### One chiral edge mode per edge  `[core]`
-Slide `#chern-ribbon`; figures `s14-f4` (§14 cell 60).
+Slide `#chern-ribbon`; figures `s14-f4` (§14 cell 7).
 
 Compare with the zigzag graphene edge band of lecture 3 (flat, not chiral, not protected by topology) and with the pump's end-state flow of lecture 5 (same picture with λ → k along the edge). Q: "What if the ribbon is narrow?" A: The two edge modes hybridize with an amplitude exponentially small in width, opening a tiny gap; the crossing is exact only in the thermodynamic limit.
 
 ### Topology without k-space: the local Chern marker  `[core]`
-Slide `#chern-marker`; figures `s14-f5` (§14 cell 61).
+Slide `#chern-marker`; figures `s14-f5` (§14 cell 8).
 
 This slide closes the loop between k-space and real space: the same integer, two computations. Mention that the sum over a finite sample must vanish (the marker is a commutator's trace), which is why the edge carries the opposite sign. Q: "How large must the flake be?" A: Bulk sites must be further from the edge than the localization length ∼ v_F/gap; a few dozen cells is enough for the Haldane model at typical parameters.
 
@@ -232,17 +232,17 @@ Sketch the mass calculation: expand the Haldane Hamiltonian at K and K'. The sub
 _Time reversal changes the rules: Kramers pairs, band inversion, the Z₂ invariant from Wannier flow, helical edges._
 
 ### Band inversion: the switch  `[intro]`
-Slide `#z2-inversion`; figures `s16-f1` (§16 cell 67).
+Slide `#z2-inversion`; figures `s16-f1` (§16 cell 14).
 
 Give the experimental story: quantized two-terminal conductance 2e²/h in HgTe wells thicker than 6.3 nm, independent of width — edge conduction. Then state what this lecture adds to lecture 6: time reversal is present, so the Chern number must vanish, and a new Z₂ invariant takes over. Q: "Why does thickness invert the bands?" A: Quantum confinement pushes the s-like level up and the p-like level down as the well gets thinner; below a critical thickness their order is the normal one.
 
 ### The Z₂ invariant from Wannier flow  `[core]`
-Slide `#z2-flow`; figures `s15-f1` (§15 cell 63), `s16-f2` (§16 cell 68).
+Slide `#z2-flow`; figures `s15-f1` (§15 cell 10), `s16-f2` (§16 cell 15).
 
 This is the Soluyanov–Vanderbilt / Yu et al. method and the most reliable way to compute Z₂ without inversion symmetry. Walk through the crossing count on both figures. Note that the Chern number would be the net winding over the full zone, which vanishes here because the two centres wind oppositely — the Z₂ index is what survives. Q: "Why only half the zone?" A: Time reversal maps k_y → −k_y; the second half is the mirror image and contains no new information.
 
 ### Helical edge states: a Kramers pair per edge  `[core]`
-Slide `#z2-edges`; figures `s15-f2` (§15 cell 64), `s16-f3` (§16 cell 69).
+Slide `#z2-edges`; figures `s15-f2` (§15 cell 11), `s16-f3` (§16 cell 16).
 
 Return to spin–momentum locking from lecture 4 for the protection argument, and to the Kramers theorem for why the crossing at the time-reversal-invariant momentum cannot be avoided. Q: "What breaks the protection?" A: A magnetic impurity (breaks time reversal) or inelastic spin-flip scattering; in experiments the quantization degrades above a few microns for exactly these reasons.
 
@@ -260,37 +260,37 @@ Slide `#beyond-map`.
 A map slide: name the four systems, their notebook sections, and the single idea each introduces. Choose depth according to time — each core slide stands alone. Q: "Are these all realized experimentally?" A: Weyl semimetals (TaAs, 2015) and 3D TIs (Bi₂Se₃, 2009) unambiguously; quadrupole insulators in metamaterials and photonics; Majorana modes in nanowires remain debated.
 
 ### The BBH model: two SSH chains crossed  `[core]`
-Slide `#beyond-bbh-model`; figures `s17-f1` (§17 cell 71), `s17-f2` (§17 cell 71).
+Slide `#beyond-bbh-model`; figures `s17-f1` (§17 cell 3), `s17-f2` (§17 cell 3).
 
 Build the model on the board as two interleaved SSH patterns; the dashed negative bond implements the π flux (product of signs around each plaquette = −1). Emphasize the negative result on purpose: bulk bands and even bulk polarization look completely trivial, which is why a new diagnostic (the nested Wilson loop, next slide) is needed. Q: "Why the π flux?" A: Without it the four bands are not doubly degenerate, the Wannier bands touch, and the quadrupole is not quantized — the flux enforces the anticommuting mirror symmetries that protect q_xy.
 
 ### Higher-order topology: the quadrupole insulator  `[core]`
-Slide `#beyond-bbh`; figures `s17-f3` (§17 cell 72), `s17-f4` (§17 cell 73).
+Slide `#beyond-bbh`; figures `s17-f3` (§17 cell 4), `s17-f4` (§17 cell 5).
 
 Present this as SSH squared: the topological phase is λ > γ in both directions, and the four corners are the four ends of two crossed chains. The nested Wilson loop is the Berry phase of the Wannier bands — the same computation applied to the output of itself. Q: "Why is the corner charge protected?" A: By the mirror symmetries that pin the Wannier bands at ±¼; break them and the corner charge can flow away.
 
 ### Writing pairing as hopping: the BdG trick  `[core]`
-Slide `#beyond-kitaev-model`; figures `s18-f1` (§18 cell 76), `s18-f2` (§18 cell 77).
+Slide `#beyond-kitaev-model`; figures `s18-f1` (§18 cell 8), `s18-f2` (§18 cell 9).
 
 Spell the mapping out once: c†c† terms connect the particle sector to the hole sector, so in the doubled basis they look like hoppings between the two copies; hermiticity of the original pairing becomes the particle–hole structure of the doubled matrix. The dashed analytic curve is E(k) = ±sqrt((2t cos k + μ)² + 4Δ² sin²k). Q: "Is the doubling physical?" A: No — it is bookkeeping. The physical Hilbert space has half the states; the E and −E eigenvectors describe the same quasiparticle, which is exactly why an E = 0 state can be its own partner (next slide).
 
 ### Superconductivity smuggled in: the Kitaev chain  `[core]`
-Slide `#beyond-kitaev`; figures `s18-f3` (§18 cell 78), `s18-f4` (§18 cell 79).
+Slide `#beyond-kitaev`; figures `s18-f3` (§18 cell 10), `s18-f4` (§18 cell 11).
 
 Explain the doubling honestly: the BdG Hamiltonian is a trick to write a quadratic pairing term as a hopping between a particle and a hole orbital; the price is that every state appears twice (E and −E) and only half are physical. The E = 0 states are exceptional — their particle and hole parts coincide. Q: "Is this the Majorana nanowire?" A: In spirit: the Rashba–Zeeman wire of lecture 4 proximitized by a superconductor maps onto the Kitaev chain inside its helical gap.
 
 ### Weyl semimetals: monopoles in the Brillouin zone  `[core]`
-Slide `#beyond-weyl-geo`; figures `s19-f1` (§19 cell 81), `s19-f2` (§19 cell 82).
+Slide `#beyond-weyl-geo`; figures `s19-f1` (§19 cell 3), `s19-f2` (§19 cell 4).
 
 Compare with graphene's Dirac point (2D): there a mass term gaps it; in 3D the three Pauli matrices are all used up by the momentum and no mass term exists — the node is stable. Q: "Why must they come in pairs?" A: The total Berry flux out of the whole Brillouin zone (a torus, closed) must vanish, so monopole charges sum to zero: the Nielsen–Ninomiya theorem.
 
 ### Sliced Chern numbers and Fermi arcs  `[core]`
-Slide `#beyond-weyl`; figures `s19-f3` (§19 cell 83), `s19-f4` (§19 cell 84).
+Slide `#beyond-weyl`; figures `s19-f3` (§19 cell 5), `s19-f4` (§19 cell 6).
 
 Dimensional reduction is the through-line of the course: the ribbon from the 2D model (lecture 3), the pump from the parameter (lecture 5), now a family of 2D models from a 3D one. Q: "Where does the arc end?" A: At the surface projections of the two nodes, where the sliced Chern number changes and the edge state must disappear into the bulk.
 
 ### The axion angle θ  `[core]`
-Slide `#beyond-axion`; figures `s20-f1` (§20 cell 86), `s20-f2` (§20 cell 87).
+Slide `#beyond-axion`; figures `s20-f1` (§20 cell 8), `s20-f2` (§20 cell 9).
 
 Position θ as the top of the hierarchy: Berry phase (1D) → Chern number (2D) → axion angle (3D) → second Chern number (4D, here parameter + 3D). The winding of θ over a cycle is the 4D analogue of the Thouless pump. Q: "Is θ measurable?" A: Yes — as a quantized Faraday/Kerr rotation and as the half-integer surface Hall effect in magnetically doped TI films (2017 onward).
 
@@ -303,32 +303,32 @@ Derive the Kitaev dispersion from the 2×2 BdG matrix (ξ_k σ_z + 2Δ sin k σ_
 _Magnetic fields by Peierls phases, Anderson localization, a Penrose quasicrystal, and the O(N³) wall._
 
 ### A magnetic field as phases on bonds  `[intro]`
-Slide `#stretch-peierls`; figures `s21-f1` (§21 cell 90).
+Slide `#stretch-peierls`; figures `s21-f1` (§21 cell 3).
 
 The Haldane model already used complex hoppings for local fluxes; here the flux is uniform and the price is a supercell that grows with the denominator q. Emphasize gauge freedom: the individual phases are unphysical, the plaquette products are not. Q: "What about irrational flux?" A: No finite magnetic cell exists; the spectrum is a Cantor set — exactly what the butterfly shows in the limit of large q.
 
 ### The Hofstadter butterfly  `[core]`
-Slide `#stretch-butterfly`; figures `s21-f2` (§21 cell 90).
+Slide `#stretch-butterfly`; figures `s21-f2` (§21 cell 3).
 
 Read the figure: at small flux the Landau-level fan emerges from the band edges (E ≈ ±4t + ħω_c(n + ½)); at φ = ½ the spectrum is symmetric with a Dirac point; the gaps nest inside gaps without end (a Cantor-set spectrum). The Chern numbers of the gaps satisfy a Diophantine equation (TKNN 1982 was written about this figure). Q: "Has this been observed?" A: Yes — in graphene on hexagonal boron nitride moiré superlattices (2013), where the large moiré cell makes one flux quantum reachable with laboratory fields.
 
 ### Anderson localization, one eigenvector at a time  `[core]`
-Slide `#stretch-disorder`; figures `s22-f1` (§22 cell 93), `s22-f2` (§22 cell 94).
+Slide `#stretch-disorder`; figures `s22-f1` (§22 cell 6), `s22-f2` (§22 cell 7).
 
 This is the notebook's demonstration that PythTB can do real-space physics as long as the matrix fits in memory. Stress the finite-size caveat: a localization length longer than 30 sites looks extended. Q: "Why does 2D always localize?" A: Scaling theory (1979): the conductance's logarithmic derivative is negative for d ≤ 2 without spin–orbit coupling, so any disorder eventually wins; with spin–orbit coupling (symplectic class) a metallic phase survives — an exercise in the notebook's spirit.
 
 ### A Penrose quasicrystal: order without periodicity  `[core]`
-Slide `#stretch-penrose`; figures `s23-f1` (§23 cell 96).
+Slide `#stretch-penrose`; figures `s23-f1` (§23 cell 9).
 
 Historical hook: Shechtman's 1982 ten-fold diffraction pattern, Nobel prize 2011. Explain the pentagrid in a sentence (five families of parallel lines; each intersection is a rhombus) and move on to the spectrum. Q: "Does k-space exist at all here?" A: Not in the Bloch sense; there is a 5D periodic lattice of which the tiling is a slice, and that is how the diffraction peaks are indexed.
 
 ### Spiky spectrum and confined states  `[core]`
-Slide `#stretch-penrose-spectrum`; figures `s23-f2` (§23 cell 97), `s23-f3` (§23 cell 98).
+Slide `#stretch-penrose-spectrum`; figures `s23-f2` (§23 cell 10), `s23-f3` (§23 cell 11).
 
 Show how the δ-peak is extracted: the integrated DOS has a plateau jump at E = 0 whose height is the confined-state fraction. Q: "Why bipartite?" A: Rhombus edges always join a vertex of one parity to the other in the pentagrid construction; bipartite hopping models have E ↔ −E symmetry, and their zero modes are counted by the sublattice imbalance of local clusters.
 
 ### The performance wall  `[core]`
-Slide `#stretch-wall`; figures `s24-f1` (§24 cell 100).
+Slide `#stretch-wall`; figures `s24-f1` (§24 cell 13).
 
 Make the numbers concrete for the students' own laptops: a 5000×5000 complex Hermitian eigh takes about a minute and 400 MB; the next doubling is eight times slower. This is not a PythTB flaw but a design choice: dense LAPACK, always all eigenvalues. Q: "Can I at least get only the eigenvalues?" A: Yes (eig_vectors=False saves a factor ~3) but the scaling is unchanged.
 
@@ -346,12 +346,12 @@ Slide `#limits-list`.
 This is a lecture about scientific honesty as much as about software. PythTB's scope is deliberate — a teaching and prototyping library whose entire API fits on one page — and the students should leave able to say which tool a given problem needs. Q: "Why not just use Kwant for everything?" A: Kwant has no Berry-phase machinery, no Wannier tools, and a heavier learning curve; the two are complementary, and the notebook's companion Kwant notebook does the transport half.
 
 ### Silent wrongness  `[core]`
-Slide `#limits-bdg`; figures `s28-f1` (§28 cell 108).
+Slide `#limits-bdg`; figures `s28-f1` (§28 cell 8).
 
 Show the corrupted spectrum and let the class spot the asymmetry, then show what the correct one looks like (lecture 8). The larger lesson: a code that accepts any Hermitian matrix will accept a physically inconsistent one, and the only defence is a check written by the person who knows the physics. Q: "Would Kwant catch this?" A: Partly — its symmetry-aware builders and conservation laws can enforce particle–hole structure when told to; nothing catches a wrong model that is internally consistent.
 
 ### Interactions by hand: mean-field Hubbard on a zigzag ribbon  `[core]`
-Slide `#limits-hubbard`; figures `s29-f1` (§29 cell 110), `s29-f2` (§29 cell 111).
+Slide `#limits-hubbard`; figures `s29-f1` (§29 cell 10), `s29-f2` (§29 cell 11).
 
 Walk through the loop on the board: U n↑n↓ → U(⟨n↓⟩n↑ + ⟨n↑⟩n↓ − ⟨n↑⟩⟨n↓⟩), so each spin sees an onsite energy U⟨n_{−σ}⟩; iterate with mixing until the moments stop changing. Q: "Is mean field trustworthy here?" A: Qualitatively; the edge ordering survives in DMRG and quantum Monte Carlo, but the magnitude of the gap and the finite-temperature behaviour do not.
 

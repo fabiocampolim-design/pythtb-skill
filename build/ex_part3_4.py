@@ -562,12 +562,4 @@ check("IV.4: converged Δ satisfies the gap equation 1 = g⟨sin²K/E⟩",
       np.isclose(lhs, 1.0, atol=1e-6), f"g⟨sin²K/E⟩ = {lhs:.8f}")
 """),
 
-code(r"""
-# ---- final tally -------------------------------------------------------------
-print("=" * 66)
-print(f"exercise checks passed : {_CHECKS['pass']}")
-print(f"exercise checks failed : {_CHECKS['fail']}")
-print(f"total wall time        : {(time.time() - t_start)/60:.1f} minutes")
-print("=" * 66)
-"""),
 ]

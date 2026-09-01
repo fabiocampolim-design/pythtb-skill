@@ -2,7 +2,9 @@
 # Copyright 2026 Fabio Campolim
 from nbbuild import md, code
 
-CELLS = [
+# The book-level introduction (chapter 0). ``__CHAPTER_LIST__`` is filled in by
+# build/assemble.py with links to every chapter notebook.
+INTRO_CELLS = [
 md(r"""
 # PythTB — Tight-Binding Physics from Theory to Code
 
@@ -15,30 +17,24 @@ no solver zoo. Its center of gravity is exactly where Kwant's is weakest — **B
 functions, polarization, and topological invariants** — and vice versa: PythTB has **no concept of a
 lead, a scattering region, or a conductance**.
 
-This notebook is the sibling of the companion Kwant notebook (`Kwant_Theory_and_Practice.ipynb`,
-same author) and follows the same contract: every claim is executed, every figure is generated
-live, and physics checks print `PASS`/`FAIL` inline.
+This book is the sibling of the companion Kwant notebooks (same author) and follows the same
+contract: every claim is executed, every figure is generated live, and physics checks print
+`PASS`/`FAIL` inline. It is shipped as **one notebook per chapter** (this folder), each of which
+runs on its own; section numbers (§1–31), figure numbers and cross-references are global, so
+"§14" means section 14 wherever it lives. The list below and `README.md` link every chapter.
 
-> **Version note.** This notebook was written and executed against **PythTB 2.0.2** (the 2025
+> **Version note.** This book was written and executed against **PythTB 2.0.2** (the 2025
 > rewrite: `TBModel`, `Lattice`, `Mesh`, `WFArray`, `Wannier`, `W90`); it should run on any 2.0.x,
 > and the two 2.0.2 bugs it works around are flagged where they occur (§7, §9). The 2.0 API is a
 > major departure from the classic `tb_model`/`wf_array` API of v1.8 used in Vanderbilt's book and
 > in most published examples; we flag the correspondence as we go. PythTB 2.0 also *gained*
 > capabilities the classic version never had —
 > native spin, built-in Chern numbers, Wilson loops, quantum geometry, an axion-angle routine, a local
-> Chern marker, and in-package Wannierization — and this notebook exercises all of them.
+> Chern marker, and in-package Wannierization — and these chapters exercise all of them.
 
-**Contents**
+**Contents** — one notebook per chapter, all in this folder
 
-- **Part I — Fundamentals**: the object model; chains, SSH, graphene, BN, flat bands; finite systems,
-  supercells, defects; native spin; the Berry-phase machinery; the Thouless pump; 3D models; Wannier90
-  import (silicon); Wannierization inside PythTB.
-- **Part II — Topological matter**: Haldane, Kane–Mele, BHZ, BBH quadrupole, Kitaev chain (as a BdG
-  hack), Weyl semimetals, Fu–Kane–Mele 3D TI and the axion angle.
-- **Part III — Stretching PythTB**: Hofstadter butterfly, disorder and localization, a Penrose
-  quasicrystal, and profiling the dense-diagonalization wall.
-- **Part IV — What PythTB cannot do**: transport, sparse methods, continuum models, interactions —
-  each demonstrated, not just asserted — and a capability matrix against Kwant.
+__CHAPTER_LIST__
 
 ### How to run this
 
@@ -50,9 +46,10 @@ powershell -ExecutionPolicy Bypass -File .\install_pythtb_windows.ps1
 
 This creates the conda env `pythtb` (Python 3.12, `pip install pythtb==2.0.2` plus the pins in
 `requirements.txt`) and registers the Jupyter kernel **`Python 3.12 (miniconda - pythtb)`** that
-this notebook is pinned to. Verify with `conda run -n pythtb python verify_pythtb.py`. A full
-top-to-bottom run of this notebook takes about **two minutes** on a laptop (measured 2026-08-28:
-1.5 min for 79 code cells); no single cell needs more than ~20 s.
+every chapter is pinned to. Verify with `python scripts/verify_pythtb.py` from the repository root.
+Running **all** chapters top-to-bottom takes about **two minutes** on a laptop in total; no single
+cell needs more than ~20 s and no chapter more than about half a minute. The code cell at the
+end of this chapter is the setup cell every chapter starts with — run it here to check the kernel.
 """),
 
 md(r"""
@@ -78,10 +75,19 @@ $$
 - `set_hop(t, i, j, R)` sets $t_{ij}(\mathbf{R}) = \langle i,\mathbf{0}|H|j,\mathbf{R}\rangle$; the
   Hermitian conjugate partner is implied — never set it yourself.
 - Every section that makes a quantitative claim ends with an inline check that prints **PASS** or
-  **FAIL**. A clean run has zero FAILs; the final cell of the notebook counts them.
+  **FAIL**. A clean run has zero FAILs; the last cell of every chapter counts them.
 """),
 
-code(r"""
+]
+
+CELLS = INTRO_CELLS
+
+# The setup cell every chapter starts with. build/assemble.py substitutes
+# ``__FIG_OFFSET__`` (figures numbered before this chapter, so numbering runs
+# through the book) and ``__CHAPTER__`` (a label for the version line).
+SETUP_TEMPLATE = r"""
+# ---- shared setup: this cell is identical in every chapter of the book ----------
+import os
 import time
 import warnings
 
@@ -100,10 +106,13 @@ plt.rcParams.update({
     "font.size": 10,
 })
 
+# the Wannier90 silicon data (§12) lives in data/ at the repository root
+DATA_DIR = next((d for d in ("data", os.path.join("..", "data")) if os.path.isdir(d)), "data")
+
 rng = np.random.default_rng(2026)          # single seed for every stochastic cell
 
 _CHECKS = {"pass": 0, "fail": 0}
-_FIG = {"n": 0}
+_FIG = {"n": __FIG_OFFSET__}               # figure numbers run through the whole book
 
 def check(label, ok, detail=""):
     '''Inline physics check; prints PASS/FAIL and tallies for the final summary.'''
@@ -126,7 +135,12 @@ def draw_bonds(ax, xy, pairs, color="0.55", lw=1.0, ls="-", zorder=1):
     for i, j in pairs:
         ax.plot(xy[[i, j], 0], xy[[i, j], 1], ls, color=color, lw=lw, zorder=zorder)
 
-print("pythtb", pythtb.__version__, "| numpy", np.__version__)
-t_notebook_start = time.time()
-"""),
-]
+print("pythtb", pythtb.__version__, "| numpy", np.__version__, "| __CHAPTER__")
+t_chapter_start = time.time()
+"""
+
+
+def setup_cell(chapter_label, fig_offset):
+    """The shared setup code cell, instantiated for one chapter."""
+    src = SETUP_TEMPLATE.replace("__FIG_OFFSET__", str(int(fig_offset)))
+    return code(src.replace("__CHAPTER__", chapter_label))

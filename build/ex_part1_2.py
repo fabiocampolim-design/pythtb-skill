@@ -4,50 +4,6 @@ from nbbuild import md, code
 
 CELLS = [
 
-md(r"""
-# PythTB — Exercises and Worked Solutions
-
-Companion to `PythTB_Theory_and_Practice.ipynb`; exercise statements live at the end of each part
-there. Same environment (`pythtb-mc` kernel), same conventions, same rule: every claim checks
-itself with an inline **PASS/FAIL**.
-"""),
-
-code(r"""
-import time
-import numpy as np
-import matplotlib.pyplot as plt
-from IPython.display import display, HTML
-
-import pythtb
-from pythtb import Lattice, TBModel, Mesh, WFArray, Wannier, W90
-from pythtb.models import graphene as graphene_factory
-from pythtb.models import haldane, kane_mele, ssh, fu_kane_mele
-
-plt.rcParams.update({"figure.dpi": 110, "figure.figsize": (7.0, 4.2),
-                     "axes.grid": True, "grid.alpha": 0.3, "font.size": 10})
-rng = np.random.default_rng(2026)
-_CHECKS = {"pass": 0, "fail": 0}
-
-def check(label, ok, detail=""):
-    ok = bool(ok)
-    _CHECKS["pass" if ok else "fail"] += 1
-    print(f"[{'PASS' if ok else 'FAIL'}] {label}" + (f" — {detail}" if detail else ""))
-    return ok
-
-_FIG = {"n": 0}
-
-def caption(text):
-    '''Numbered caption rendered directly below the figure it describes.'''
-    _FIG["n"] += 1
-    display(HTML(
-        f"<div style='max-width:780px;margin:2px 0 14px 12px;font-size:0.92em;"
-        f"color:#444;border-left:3px solid #bbb;padding-left:10px'>"
-        f"<b>Figure {_FIG['n']}.</b> {text}</div>"))
-
-print("pythtb", pythtb.__version__)
-t_start = time.time()
-"""),
-
 # ------------------------------------------------------------------ I.1
 md(r"""
 ## I.1 — The trestle
@@ -321,7 +277,7 @@ valence bands, because their Wannier functions are less localized.
 """),
 
 code(r"""
-silicon = W90("data/w90_silicon", "si")
+silicon = W90(os.path.join(DATA_DIR, "w90_silicon"), "si")
 fermi_ev = 6.2285135
 w90_kpt, w90_evals = silicon.bands_w90()[:2]
 

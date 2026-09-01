@@ -3,6 +3,16 @@
 from nbbuild import md, code
 
 CELLS = [
+code(r"""
+# recap — rebuilt from §6 (chapter 2) so that this chapter runs on its own
+def ssh_model(v, w):
+    lat = Lattice(lat_vecs=[[1.0]], orb_vecs=[[0.0], [0.5]], periodic_dirs=[0])
+    m = TBModel(lat)
+    m.set_hop(v, 0, 1, [0])
+    m.set_hop(w, 1, 0, [1])
+    return m
+"""),
+
 
 # ---------------------------------------------------------------- section 11
 md(r"""
@@ -147,7 +157,7 @@ caption("The diamond structure of silicon: two interpenetrating fcc lattices, ea
 """),
 
 code(r"""
-silicon = W90("data/w90_silicon", "si")
+silicon = W90(os.path.join(DATA_DIR, "w90_silicon"), "si")
 fermi_ev = 6.2285135          # DFT Fermi level of this calculation, in eV
 
 dist, ham = silicon.dist_hop()

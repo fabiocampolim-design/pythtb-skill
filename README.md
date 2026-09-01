@@ -6,8 +6,8 @@
 ![platform](https://img.shields.io/badge/platform-Windows%20%7C%20Linux%20%7C%20macOS-lightgrey)
 ![license](https://img.shields.io/badge/license-Apache--2.0-green)
 
-**An AI-agent skill, a verified Python toolkit, two fully executed notebooks and
-an undergraduate course for [PythTB 2.0](https://github.com/pythtb/pythtb), the
+**An AI-agent skill, a verified Python toolkit, a fully executed book of chapter
+notebooks and an undergraduate course for [PythTB 2.0](https://github.com/pythtb/pythtb), the
 pure-Python tight-binding package behind Vanderbilt's *Berry Phases in Electronic
 Structure Theory*.**
 
@@ -15,8 +15,8 @@ This repository packages practical, executed knowledge about PythTB in a form
 that both humans and AI coding agents can use: a skill definition
 ([`SKILL.md`](SKILL.md)) that teaches an agent the workflows and the traps,
 plain Python helpers that implement the awkward parts (`scripts/`), distilled
-reference documentation (`references/`), and two notebooks in which **every
-physics claim is executed and checked** — from the first band structure to
+reference documentation (`references/`), and a book of 8 chapter notebooks in
+which **every physics claim is executed and checked** — from the first band structure to
 axion angles, quasicrystals and Hofstadter butterflies, ending with an honest
 map of what PythTB cannot do and how to hand a model to Kwant.
 
@@ -48,11 +48,16 @@ map of what PythTB cannot do and how to hand a model to Kwant.
   releases, issues, pull requests, `main` commits and PyPI versions of
   PythTB since the previous run (anonymous GitHub/PyPI API, ~5 requests);
   `scripts/register_watch_task.ps1` schedules it weekly on Windows.
-- **Two executed notebooks.** `PythTB_Theory_and_Practice.ipynb` — 31 sections
-  in four parts, **72 inline physics checks, 69 captioned figures**, ~1.5 min
-  to run; `PythTB_Exercises_Solutions.ipynb` — 20 worked exercises, **35
-  checks, 18 figures**. Every system is drawn before it is computed on; every
-  figure has a numbered caption saying what to look at and why.
+- **An executed book, one notebook per chapter.** `chapters/` — *PythTB:
+  Tight-Binding Physics from Theory to Code*, 31 sections in four parts,
+  shipped as 8 chapter notebooks (plus an introduction) so that no file is
+  larger than about 1 MB: each chapter runs on its own, opens with its own
+  table of contents and links to the previous/next chapter, and
+  [`chapters/README.md`](chapters/README.md) is the index.
+  **72 inline physics checks, 69 captioned figures**, ~2 min to run all of it.
+  Two exercise notebooks — 20 worked exercises, **35 checks, 18 figures**.
+  Every system is drawn before it is computed on; every figure has a numbered
+  caption saying what to look at and why.
 - **An undergraduate course** (`course/`) — *Tight-Binding Physics with PythTB*,
   ten lectures as offline reveal.js slides with a committed **PDF fallback**
   (`course/slides.pdf`), an A4 handout and lecturer notes with an anticipated
@@ -97,7 +102,7 @@ python scripts/verify_pythtb.py                 # 5 checks -> "Environment OK."
 python scripts/pythtb_tools.py --selftest       # helper checks
 python scripts/watch_upstream.py --weekly       # what changed upstream since last week
 python -m ipykernel install --user --name pythtb-mc --display-name "Python 3.12 (pythtb)"
-jupyter lab PythTB_Theory_and_Practice.ipynb    # or just read it on GitHub
+jupyter lab chapters/PythTB_00_Introduction.ipynb   # or read chapters/README.md on GitHub
 python -m pytest tests                          # test suite (~40 s; no kwant needed)
 ```
 
@@ -112,15 +117,15 @@ Working with an agent on this repository itself? Hand it **[AGENTS.md](AGENTS.md
 
 ## What the notebooks cover
 
-| Part | Sections | Highlights |
-|---|---|---|
-| I — Fundamentals | §1–13 | object model; SSH; graphene/BN; Lieb & kagome flat bands with exact compact localized states; finite systems, supercells, defects; native spin; Berry phases & polarization; Thouless pump; 3D; **Wannier90 import of silicon**; in-package Wannierization |
-| II — Topological matter | §14–20 | Haldane (Chern three ways, real-space local Chern marker); Kane–Mele & BHZ Z₂ via Wannier-centre flow; **BBH quadrupole, nested Wilson loops**; Kitaev chain as a BdG hack; Weyl monopoles & Fermi arcs; **Fu–Kane–Mele axion angle θ + second Chern number** |
-| III — Stretching PythTB | §21–24 | Hofstadter butterfly (Landau-gauge supercells); Anderson localization; **Penrose quasicrystal** from de Bruijn's pentagrid; the O(N³) wall, measured |
-| IV — What PythTB cannot do | §25–31 | no transport, no sparse/KPM, no continuum, no symmetry rails, no interactions — each *demonstrated*; **capability matrix vs Kwant**; where to go next |
+| Part | Sections | Chapters | Highlights |
+|---|---|---|---|
+| I — Fundamentals | §1–13 | 1–3 | object model; SSH; graphene/BN; Lieb & kagome flat bands with exact compact localized states; finite systems, supercells, defects; native spin; Berry phases & polarization; Thouless pump; 3D; **Wannier90 import of silicon**; in-package Wannierization |
+| II — Topological matter | §14–20 | 4–6 | Haldane (Chern three ways, real-space local Chern marker); Kane–Mele & BHZ Z₂ via Wannier-centre flow; **BBH quadrupole, nested Wilson loops**; Kitaev chain as a BdG hack; Weyl monopoles & Fermi arcs; **Fu–Kane–Mele axion angle θ + second Chern number** |
+| III — Stretching PythTB | §21–24 | 7 | Hofstadter butterfly (Landau-gauge supercells); Anderson localization; **Penrose quasicrystal** from de Bruijn's pentagrid; the O(N³) wall, measured |
+| IV — What PythTB cannot do | §25–31 | 8 | no transport, no sparse/KPM, no continuum, no symmetry rails, no interactions — each *demonstrated*; **capability matrix vs Kwant**; where to go next |
 
 In total: 107 inline `[PASS]`/`[FAIL]` checks and 87 figures with 87 numbered
-captions across the two notebooks. The checks caught a dozen wrong physical
+captions across the chapter and exercise notebooks. The checks caught a dozen wrong physical
 claims during writing (BN's polarization jump is e/3, not e/2; the Lieb flat
 band survives corner–corner hopping; only the BBH Wannier *centroid* is
 pinned…) and the same discipline surfaced three upstream issues, kept as
@@ -142,8 +147,8 @@ drafts in the study folder next to this repository until they are filed.
   (2026-08-29); Kwant cross-check of `to_kwant` with kwant 1.5.0 (2026-08-28);
   the upstream test suite run on the same machine (102 pass, 1 platform-fragile).
 - **CI-validated 2026-08-31** (first push): Linux, Windows and macOS ×
-  Python 3.12/3.13 — fast suite on all six, plus a full re-execution of both
-  notebooks on ubuntu (130 checks green in 68 s). Formerly listed here as
+  Python 3.12/3.13 — fast suite on all six, plus a full re-execution of every
+  chapter notebook on ubuntu (130 checks green in 68 s). Formerly listed here as
   "untested until CI runs".
 - **Planned:** file the three upstream issues; answer upstream #62 (Peierls
   substitution) and #60 (DOS) with the recipes from §21 and exercise IV.2;

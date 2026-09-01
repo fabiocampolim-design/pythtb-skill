@@ -3,6 +3,20 @@
 from nbbuild import md, code
 
 CELLS = [
+code(r"""
+# recap — rebuilt from §4 (chapter 1) so that this chapter runs on its own
+def honeycomb(delta, t):
+    '''Honeycomb-lattice model with staggered onsite ±delta and NN hopping t.'''
+    lat = Lattice(lat_vecs=[[1.0, 0.0], [0.5, np.sqrt(3) / 2]],
+                  orb_vecs=[[1/3, 1/3], [2/3, 2/3]], periodic_dirs=[0, 1])
+    m = TBModel(lat)
+    m.set_onsite([-delta, delta])
+    m.set_hop(t, 0, 1, [0, 0])
+    m.set_hop(t, 1, 0, [1, 0])
+    m.set_hop(t, 1, 0, [0, 1])
+    return m
+"""),
+
 
 # ---------------------------------------------------------------- section 6
 md(r"""
