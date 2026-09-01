@@ -1,7 +1,7 @@
 # Topological invariants with PythTB 2.0 — recipes and conventions
 
-Each recipe was executed in `PythTB_Theory_and_Practice.ipynb` (section in
-brackets) with an inline check; parameter values quoted are the ones that pass.
+Each recipe was executed in the chapter notebooks under `chapters/` (section in
+brackets; §14–20 are chapters 4–6) with an inline check; parameter values quoted are the ones that pass.
 
 ## Grids and endpoints
 

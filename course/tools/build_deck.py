@@ -31,7 +31,7 @@ import os
 import re
 import sys
 
-__version__ = "1.4.0"
+__version__ = "1.4.1"
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 COURSE = os.path.abspath(os.path.join(HERE, ".."))
@@ -303,8 +303,9 @@ def render_handout(deck, prov):
 <body>
 <h1>{html.escape(deck["deckTitle"])}</h1>
 <p class="sub">{html.escape(deck["deckSubtitle"])} · companion handout · {html.escape(deck["author"])} · {html.escape(deck["edition"])}</p>
-<p>Every figure in the lectures is produced by a cell of <code>PythTB_Theory_and_Practice.ipynb</code> (pythtb-skill);
-the exercises for each Part, with solutions, are in <code>PythTB_Exercises_Solutions.ipynb</code>. Each lecture runs from
+<p>Every figure in the lectures is produced by a cell of the companion chapter notebooks (<code>chapters/</code> in
+pythtb-skill; the caption names the chapter and cell); the exercises for each Part, with solutions, are in
+<code>chapters/PythTB_Exercises_I-II.ipynb</code> and <code>chapters/PythTB_Exercises_III-IV.ipynb</code>. Each lecture runs from
 a picture (intro) through the physics (core) to the equations (math); stop where your course stops. The slides are
 <code>course/deck/index.html</code> (any browser, offline) with a PDF fallback at <code>course/slides.pdf</code>.</p>
 <h2>Syllabus</h2>

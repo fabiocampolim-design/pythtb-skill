@@ -282,7 +282,7 @@ check("θ = 0 at β = 0 (trivial reference)", abs(theta[0]) < 1e-6)
 md(r"""
 ## Exercises for Part II
 
-Worked solutions are in `PythTB_Exercises_Solutions.ipynb`.
+Worked solutions are in [`PythTB_Exercises_I-II.ipynb`](PythTB_Exercises_I-II.ipynb) (this folder).
 
 **II.1 — Competing masses.** In the Haldane model both $\Delta$ (Semenoff mass) and
 $t_2\sin\phi$ (Haldane mass) gap the Dirac points, but with different relative signs at $K$ and

@@ -306,7 +306,7 @@ check("Wannier function decays exponentially", slope < -1.0,
 md(r"""
 ## Exercises for Part I
 
-Worked solutions are in `PythTB_Exercises_Solutions.ipynb`.
+Worked solutions are in [`PythTB_Exercises_I-II.ipynb`](PythTB_Exercises_I-II.ipynb) (this folder).
 
 **I.1 — The trestle.** Build the classic PythTB "trestle" model: a 1D chain with two orbitals per
 cell at heights 0 and 0.5 in a non-periodic second direction, first-neighbour hopping $t$ along the

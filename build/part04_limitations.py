@@ -347,7 +347,7 @@ de Bruijn's 1981 pentagrid papers for §23.
 md(r"""
 ## Exercises for Part IV
 
-Worked solutions are in `PythTB_Exercises_Solutions.ipynb`.
+Worked solutions are in [`PythTB_Exercises_III-IV.ipynb`](PythTB_Exercises_III-IV.ipynb) (this folder).
 
 **IV.1 — The exporter.** Write `to_kwant(model)` translating a finite PythTB `TBModel` (orbital
 positions, onsites, hoppings) into a `kwant.Builder`, and verify that the two packages produce the

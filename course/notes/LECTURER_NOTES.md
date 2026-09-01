@@ -8,7 +8,7 @@ _What tight binding is, how the course runs, and the one Hamiltonian everything 
 ### Tight-Binding Physics with PythTB  `[intro]`
 Slide `#welcome-title`.
 
-Set the contract on the first slide: nothing in this course is a cartoon. Every plot was produced by a cell of PythTB_Theory_and_Practice.ipynb and can be re-run by the students. The course assumes second-year quantum mechanics (the Schrödinger equation, matrices, eigenvalues) and nothing about solid-state physics. Q: "Do I need to know Python?" A: You need to read it; the notebook gives every model in full and the exercises ask you to modify, not to write from scratch.
+Set the contract on the first slide: nothing in this course is a cartoon. Every plot was produced by a cell of the companion chapter notebooks (chapters/) and can be re-run by the students. The course assumes second-year quantum mechanics (the Schrödinger equation, matrices, eigenvalues) and nothing about solid-state physics. Q: "Do I need to know Python?" A: You need to read it; the notebook gives every model in full and the exercises ask you to modify, not to write from scratch.
 
 ### Why tight binding?  `[intro]`
 Slide `#welcome-why`.

@@ -55,7 +55,7 @@ window.DECK_CONTENT = {
       "kicker": "pythtb-skill · undergraduate course",
       "title": "Tight-Binding Physics with PythTB",
       "sub": "From atoms to topological matter in ten lectures — every figure computed live in the companion notebook",
-      "notes": "Set the contract on the first slide: nothing in this course is a cartoon. Every plot was produced by a cell of PythTB_Theory_and_Practice.ipynb and can be re-run by the students. The course assumes second-year quantum mechanics (the Schrödinger equation, matrices, eigenvalues) and nothing about solid-state physics. Q: \"Do I need to know Python?\" A: You need to read it; the notebook gives every model in full and the exercises ask you to modify, not to write from scratch."
+      "notes": "Set the contract on the first slide: nothing in this course is a cartoon. Every plot was produced by a cell of the companion chapter notebooks (chapters/) and can be re-run by the students. The course assumes second-year quantum mechanics (the Schrödinger equation, matrices, eigenvalues) and nothing about solid-state physics. Q: \"Do I need to know Python?\" A: You need to read it; the notebook gives every model in full and the exercises ask you to modify, not to write from scratch."
     },
     "welcome-why": {
       "level": "intro", "layout": "text",
@@ -83,7 +83,7 @@ window.DECK_CONTENT = {
         "<span class='c-3'>intro</span> slides: one figure, plain language, no symbols beyond <span class='math'>E</span> and <span class='math'>k</span>.",
         "<span class='c-1'>core</span> slides: the physics and how PythTB computes it (which method, which object).",
         "<span class='c-violet'>math</span> slides: the formulas behind the figures, with the derivation sketched in the lecturer notes.",
-        "To run the notebook: <code>install_pythtb_windows.ps1</code> (or <code>pip install -r requirements.txt</code>), then open <code>PythTB_Theory_and_Practice.ipynb</code>; exercises with solutions in <code>PythTB_Exercises_Solutions.ipynb</code>.",
+        "To run the notebooks: <code>install_pythtb_windows.ps1</code> (or <code>pip install -r requirements.txt</code>), then open <code>chapters/README.md</code> and start with chapter 0; exercises with solutions in <code>chapters/PythTB_Exercises_I-II.ipynb</code> and <code>…_III-IV.ipynb</code>.",
         "Speaker view: press <code>S</code>. Section jump: <code>Shift+←/→</code>. Overview: <code>Esc</code>."
       ],
       "notes": "This slide is for the lecturer as much as for the students: the level chip at the top-right of every slide says where you are, so a first-year audience can stop after the core slides and a fourth-year audience can go straight to the math. Q: \"Where are the exercises?\" A: At the end of each Part of the notebook, with full solutions in the second notebook; the handout lists which exercises match which lecture."

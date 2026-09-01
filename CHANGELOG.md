@@ -5,6 +5,30 @@ All notable changes to pythtb-skill are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The current version is in `VERSION`
 and is printed by every script's `--version`.
 
+## [1.4.1] - 2026-08-31
+
+Follow-up to the chapter split, from the independent code review of 1.4.0.
+
+### Fixed
+- The exercise blocks of chapters 3, 6, 7 and 8, the course welcome slide,
+  the handout template, the installer's closing line and
+  `references/invariants.md` / `limitations.md` still named the two deleted
+  single notebooks; they now point at the chapter and exercise notebooks.
+  A test scans every tracked file for the old names.
+- `build/execute.py`: an unknown `--which` is recorded in the audit log
+  (exit 2) instead of bypassing it; `--tally-only --outdir` counts the
+  source copy instead of failing on the absent output file. `assemble.py`
+  audits an unknown `--which` the same way.
+
+### Added
+- `tests/test_notebooks.py::test_recap_cells_match_their_source`: every
+  `# recap` cell must reproduce the original definition verbatim (the
+  recaps are copies; this keeps them from drifting).
+
+### Changed
+- `build/assemble.py` imports each part module once (memoised) instead of
+  re-collecting the chapter prefix for every header, offset and index row.
+
 ## [1.4.0] - 2026-08-31
 
 The book is now one notebook per chapter (`chapters/`), each with its own

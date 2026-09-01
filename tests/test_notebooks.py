@@ -151,6 +151,54 @@ def test_no_personal_paths_or_codenames_in_notebook(key):
         assert needle not in blob, needle
 
 
+RECAP_DEF = re.compile(r"^(def \w+\(.*?)(?=^\S|\Z)", re.S | re.M)
+
+
+def _defs(src):
+    """{name: normalised source} of every top-level function in a code string."""
+    out = {}
+    for block in RECAP_DEF.findall(src):
+        name = re.match(r"def (\w+)\(", block).group(1)
+        out[name] = "\n".join(ln.rstrip() for ln in block.strip().splitlines())
+    return out
+
+
+def test_recap_cells_match_their_source():
+    """A `# recap` cell rebuilds a model from an earlier chapter verbatim: if the
+    original changes, the copy must change with it (else the chapters drift)."""
+    originals, recaps = {}, []
+    for ch in CHAPTERS:
+        for kind, src in collect(ch.parts)[0]:
+            if kind != "code":
+                continue
+            if src.lstrip().startswith("# recap"):
+                recaps.append((ch.key, src))
+            else:
+                for name, body in _defs(src).items():
+                    originals.setdefault(name, (ch.key, body))
+    assert recaps, "chapters 2, 3 and 8 carry recap cells"
+    for key, src in recaps:
+        for name, body in _defs(src).items():
+            assert name in originals, f"{key}: recap defines {name} which no chapter defines first"
+            src_key, src_body = originals[name]
+            assert src_key < key, f"{key}: recap of {name} precedes its source chapter {src_key}"
+            assert body == src_body, f"{key}: recap of {name} differs from chapter {src_key}"
+
+
+def test_no_monolith_names_anywhere():
+    """The two pre-1.4.0 single notebooks are gone; nothing shipped may point at them."""
+    out = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True, text=True, check=True).stdout
+    old = ["PythTB_Theory_and_" + "Practice.ipynb", "PythTB_Exercises_" + "Solutions.ipynb"]
+    for rel in out.split():
+        if rel == "CHANGELOG.md" or os.path.splitext(rel)[1] not in {
+                ".py", ".md", ".js", ".ps1", ".yml", ".cff", ".json", ".html", ".ipynb", ".txt"}:
+            continue
+        with open(os.path.join(ROOT, rel), encoding="utf-8", errors="replace") as f:
+            blob = f.read()
+        for name in old:
+            assert name not in blob, f"{rel} still refers to {name}"
+
+
 def test_execute_notebooks_end_to_end(request, tmp_path):
     if not request.config.getoption("--run-notebooks"):
         pytest.skip("pass --run-notebooks to execute (about 3 minutes)")

@@ -27,6 +27,7 @@ Every invocation appends an audit record to ``<log-dir>/assemble.log``
 """
 
 import argparse
+import functools
 import importlib
 import os
 import re
@@ -94,14 +95,20 @@ EXERCISE = re.compile(r"^##\s+([IVX]+\.\d+)\s+—\s+(.*)$")     # ## II.3 — Ti
 CAPTION_CALL = re.compile(r"(?<!def )(?<![\w.])caption\(")
 
 
+@functools.lru_cache(maxsize=None)
+def _part_cells(name):
+    """The CELLS of one part module, imported once (the assembler asks many times)."""
+    return tuple(importlib.import_module(name).CELLS)
+
+
 def collect(parts):
     """Return (cells, [(part_name, n_cells), ...]) for the given part modules."""
     cells = []
     per_part = []
     for name in parts:
-        mod = importlib.import_module(name)
-        per_part.append((name, len(mod.CELLS)))
-        cells.extend(mod.CELLS)
+        part = _part_cells(name)
+        per_part.append((name, len(part)))
+        cells.extend(part)
     return cells, per_part
 
 
@@ -154,6 +161,7 @@ def figures_in(cells):
     return sum(len(CAPTION_CALL.findall(src)) for kind, src in cells if kind == "code")
 
 
+@functools.lru_cache(maxsize=None)
 def figure_offset(key):
     """Figures produced by the earlier chapters of the same series."""
     ch = BY_KEY[key]
@@ -344,9 +352,9 @@ def main(argv=None):
 
     log = AuditLog("assemble", args.outdir, args.log_dir, verbose=args.verbose,
                    quiet=args.quiet, dry=args.list)
-    keys = select(args.which)
     rc = 0
     try:
+        keys = select(args.which)      # an unknown --which is an audited failure too
         chapters_dir = os.path.join(args.outdir, CHAPTERS_DIR)
         for key in keys:
             ch = BY_KEY[key]
@@ -366,6 +374,9 @@ def main(argv=None):
             with open(index, "w", encoding="utf-8", newline="\n") as f:
                 f.write(index_markdown())
             log.info(f"wrote {index}")
+    except SystemExit as exc:
+        log.error(str(exc))
+        rc = 2
     except Exception as exc:  # noqa: BLE001 - the audit log must record any failure
         log.error(f"FAILED: {exc!r}")
         rc = 1

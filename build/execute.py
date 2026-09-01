@@ -119,7 +119,13 @@ def main(argv=None):
     rc = 0
     t_all = time.time()
     totals = {}
-    for key in select(args.which):
+    try:
+        keys = select(args.which)
+    except SystemExit as exc:          # an unknown --which is still an audited failure
+        log.error(str(exc))
+        log.close(2)
+        return 2
+    for key in keys:
         ch = BY_KEY[key]
         src = os.path.join(args.indir, CHAPTERS_DIR, ch.file)
         dst = os.path.join(outdir, CHAPTERS_DIR, ch.file)
@@ -133,6 +139,8 @@ def main(argv=None):
             log.info(f"{ch.file}: nbconvert rc={code} in {time.time() - t0:.0f}s (log: {logfile})")
             if code != 0:
                 rc = 1
+        elif not os.path.exists(dst):
+            dst = src                  # --tally-only --outdir: count the source copy
         t = tally(dst)
         totals.setdefault(ch.series, []).append(t)
         log.info(f"{ch.file}: {t['cells']} cells ({t['code']} code) | "

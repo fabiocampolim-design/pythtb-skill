@@ -44,5 +44,5 @@ if (-not $SkipVerify) {
     conda run -n $EnvName python (Join-Path $PSScriptRoot "scripts\verify_pythtb.py")
 }
 
-Write-Host "Done. Open PythTB_Theory_and_Practice.ipynb with kernel '$kernelDisplay'."
+Write-Host "Done. Open chapters\PythTB_00_Introduction.ipynb (index: chapters\README.md) with kernel '$kernelDisplay'."
 Write-Host "Regression suite: conda run -n $EnvName python -m pytest tests"

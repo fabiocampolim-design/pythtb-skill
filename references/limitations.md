@@ -1,7 +1,7 @@
 # What PythTB cannot do — and what to use instead
 
-Each row is *demonstrated* with failing or hand-written code in Part IV of
-`PythTB_Theory_and_Practice.ipynb` (§25–§30). Kwant column: version 1.5.0.
+Each row is *demonstrated* with failing or hand-written code in Part IV of the
+book, `chapters/PythTB_08_What_PythTB_Cannot_Do.ipynb` (§25–§30). Kwant column: version 1.5.0.
 
 | Capability | PythTB 2.0.2 | Kwant 1.5 |
 |---|---|---|

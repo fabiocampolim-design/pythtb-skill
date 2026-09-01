@@ -436,7 +436,7 @@ print(f"extrapolated dense full solve at N = {N_big:,}: ~{est_dense/60:.0f} minu
 md(r"""
 ## Exercises for Part III
 
-Worked solutions are in `PythTB_Exercises_Solutions.ipynb`.
+Worked solutions are in [`PythTB_Exercises_III-IV.ipynb`](PythTB_Exercises_III-IV.ipynb) (this folder).
 
 **III.1 — Colored butterfly.** For $q \le 8$, compute the Chern number of each Hofstadter gap
 (sum the subband Chern numbers below it with `WFArray.chern_number` on the magnetic supercell) and
