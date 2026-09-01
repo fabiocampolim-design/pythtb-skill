@@ -11,6 +11,31 @@ notebooks and an undergraduate course for [PythTB 2.0](https://github.com/pythtb
 pure-Python tight-binding package behind Vanderbilt's *Berry Phases in Electronic
 Structure Theory*.**
 
+<table align="center">
+  <tr>
+    <td align="center" width="33%"><a href="chapters/PythTB_01_Foundations.ipynb"><img src="course/deck/figs/s04-f5.png" alt="The graphene Dirac cone: the energy surface E(kx, ky) near the zone corner" width="100%"></a></td>
+    <td align="center" width="33%"><a href="chapters/PythTB_04_Chern_and_Z2.ipynb"><img src="course/deck/figs/s14-f2.png" alt="Berry curvature of the occupied Haldane band over the Brillouin zone" width="100%"></a></td>
+    <td align="center" width="33%"><a href="chapters/PythTB_04_Chern_and_Z2.ipynb"><img src="course/deck/figs/s14-f3.png" alt="The Haldane phase diagram computed point by point against the analytic phase boundary" width="100%"></a></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Fig. 10 — the Dirac cone of graphene (<a href="chapters/PythTB_01_Foundations.ipynb">ch. 1</a>)</sub></td>
+    <td align="center"><sub>Fig. 36 — Haldane Berry curvature, summing to C = −1 (<a href="chapters/PythTB_04_Chern_and_Z2.ipynb">ch. 4</a>)</sub></td>
+    <td align="center"><sub>Fig. 37 — the Haldane phase diagram vs the analytic boundary (<a href="chapters/PythTB_04_Chern_and_Z2.ipynb">ch. 4</a>)</sub></td>
+  </tr>
+  <tr>
+    <td align="center" width="33%"><a href="chapters/PythTB_04_Chern_and_Z2.ipynb"><img src="course/deck/figs/s15-f2.png" alt="Kane–Mele ribbon: helical edge states, a Kramers pair per edge, coloured by weight on the lower edge" width="100%"></a></td>
+    <td align="center" width="33%"><a href="chapters/PythTB_06_Weyl_and_Axion.ipynb"><img src="course/deck/figs/s19-f4.png" alt="Weyl semimetal slab: the Fermi arc connecting the two Weyl-node projections" width="100%"></a></td>
+    <td align="center" width="33%"><a href="chapters/PythTB_07_Stretching_PythTB.ipynb"><img src="course/deck/figs/s23-f1.png" alt="A Penrose rhombus tiling patch from de Bruijn's pentagrid, as a tight-binding model" width="100%"></a></td>
+  </tr>
+  <tr>
+    <td align="center"><sub>Fig. 41 — Kane–Mele helical edge states (<a href="chapters/PythTB_04_Chern_and_Z2.ipynb">ch. 4</a>)</sub></td>
+    <td align="center"><sub>Fig. 56 — a Fermi arc on a Weyl-semimetal slab (<a href="chapters/PythTB_06_Weyl_and_Axion.ipynb">ch. 6</a>)</sub></td>
+    <td align="center"><sub>Fig. 63 — a Penrose quasicrystal as a tight-binding model (<a href="chapters/PythTB_07_Stretching_PythTB.ipynb">ch. 7</a>)</sub></td>
+  </tr>
+</table>
+
+<p align="center"><sub>Six of the 69 figures in the book — every one produced by an executed, checked notebook cell.</sub></p>
+
 This repository packages practical, executed knowledge about PythTB in a form
 that both humans and AI coding agents can use: a skill definition
 ([`SKILL.md`](SKILL.md)) that teaches an agent the workflows and the traps,

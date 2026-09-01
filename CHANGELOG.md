@@ -5,6 +5,15 @@ All notable changes to pythtb-skill are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The current version is in `VERSION`
 and is printed by every script's `--version`.
 
+## [1.4.2] - 2026-09-01
+
+### Added
+- README: a six-figure gallery under the tagline — the graphene Dirac cone,
+  the Haldane Berry curvature and phase diagram, the Kane–Mele helical edge
+  states, a Weyl-slab Fermi arc and the Penrose tiling — each tile linking to
+  its chapter. The images are the course's provenance-tracked figures
+  (`course/deck/figs/`, byte-identical to the chapter outputs); no new files.
+
 ## [1.4.1] - 2026-08-31
 
 Follow-up to the chapter split, from the independent code review of 1.4.0.
