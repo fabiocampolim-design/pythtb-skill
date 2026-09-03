@@ -32,7 +32,7 @@ import re
 import subprocess
 import sys
 
-VERSION = "1.5.0"
+VERSION = "1.5.1"
 
 TEXT_EXT = {".py", ".md", ".ipynb", ".txt", ".yml", ".yaml", ".json", ".ps1",
             ".bib", ".cff", ".toml", ".cfg", ".ini", ".bat", ".sh", ".html",
@@ -43,6 +43,8 @@ NB_WARN, NB_FAIL = 1_000_000, 1_500_000   # rule 25: 1 MB target, 1.5 MB hard ca
 PDF_WARN, PDF_MAX = 5_000_000, 20_000_000  # rule 7: a tracked PDF over 20 MB is literature; 5-20 MB is a built deck/manual to justify
 COMMUNITY = ("CONTRIBUTING.md", "CODE_OF_CONDUCT.md", "docs/DESIGN.md")   # rule 26
 COMMUNITY_MIN = 400                        # bytes; a stub is not a pathway
+PROFILE_RULES = (3, 18, 20)                # kind: profile (a GitHub profile README repo) is not software:
+                                           # only scrub, held-material and archive rules apply (Fabio 2026-09-02)
 IMAGE_PAYLOAD = re.compile(r'"image/[a-z0-9+.-]+"\s*:\s*(?:"[^"]*"|\[[^\]]*\])')
 HELD_DIRS = ("held", "private")
 MAX_FINDINGS = 8   # per check, in the report
@@ -667,7 +669,20 @@ def project_type(repo, override=None):
     return "from-scratch"          # strictest default
 
 
-def run_repo(repo, rules, ptype, subdir=None):
+def project_kind(repo, override=None):
+    """`kind:` in .project-class -- `software` (default) or `profile` (a GitHub profile
+    README repository: no product, no suite, no manual; only rules 3, 18 and 20 apply)."""
+    if override:
+        return override
+    p = os.path.join(repo, ".project-class")
+    if os.path.isfile(p):
+        m = re.search(r"^kind:\s*(\S+)", slurp(p), re.M)
+        if m:
+            return m.group(1)
+    return "software"
+
+
+def run_repo(repo, rules, ptype, subdir=None, kind="software"):
     """Run every rule against `repo`. With `subdir`, the product folder is the
     unit under check: paths become relative to it and every file-existence
     check (LICENSE, README, .github/workflows, docs/, ...) looks there — 1.4.0
@@ -704,6 +719,11 @@ def run_repo(repo, rules, ptype, subdir=None):
     results = []
     for rule in rules["rules"]:
         applies = rule["applies"] in ("all", ptype)
+        if kind == "profile" and rule["id"] not in PROFILE_RULES:
+            for cid in rule["check_ids"] or ["(judgement)"]:
+                results.append(dict(rule=rule["id"], check=cid, status="SKIP",
+                                    detail="n/a for kind profile"))
+            continue
         if rule["check"] == "manual":
             results.append(dict(rule=rule["id"], check="(judgement)",
                                 status="MANUAL" if applies else "SKIP",
@@ -834,6 +854,8 @@ def build_parser():
                     help="run portfolio-side checks against the claude root")
     ap.add_argument("--type", choices=["from-scratch", "study-and-contribute"],
                     help="override the .project-class type")
+    ap.add_argument("--kind", choices=["software", "profile"],
+                    help="override the .project-class kind (profile = README-only repo, rules 3/18/20 only)")
     ap.add_argument("--subdir", help="restrict checks to this product subfolder "
                     "(e.g. pythtb-skill) - study repos whose product is a subset")
     ap.add_argument("--rules", help="path to rules.yaml (default: "
@@ -859,8 +881,9 @@ def main(argv=None):
     if args.repo:
         repo = os.path.abspath(args.repo)
         ptype = project_type(repo, args.type)
-        res = run_repo(repo, rules, ptype, args.subdir)
-        label = "%s (%s)" % (repo, ptype)
+        kind = project_kind(repo, args.kind)
+        res = run_repo(repo, rules, ptype, args.subdir, kind)
+        label = "%s (%s%s)" % (repo, ptype, ", " + kind if kind != "software" else "")
         if args.subdir:
             label += " subdir=" + args.subdir
         code |= report(res, label, args.json, args.quiet)
