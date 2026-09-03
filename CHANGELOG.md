@@ -5,6 +5,19 @@ All notable changes to pythtb-skill are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The current version is in `VERSION`
 and is printed by every script's `--version`.
 
+## [1.4.3] - 2026-09-02
+
+### Added
+
+- `CONTRIBUTING.md`, `CODE_OF_CONDUCT.md` (Contributor Covenant 2.1) and `docs/DESIGN.md`
+  (design decisions and trade-offs): the community pathways a JOSS/JOSE review asks for
+  (GITHUBIFY rule 26).
+
+### Changed
+
+- Vendored conformance checker 1.5.0 (rule 25 notebook-size, rule 26 community-files,
+  large-PDF and LF-pin checks, base64 payloads excluded from the scrub, UTF-8 output).
+
 ## [1.4.2] - 2026-09-01
 
 ### Added
