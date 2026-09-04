@@ -5,6 +5,17 @@ All notable changes to pythtb-skill are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The current version is in `VERSION`
 and is printed by every script's `--version`.
 
+## [1.4.5] - 2026-09-04
+
+The independent review of 1.4.4 (one finding). Notebooks are untouched.
+
+### Fixed
+- `scripts/watch_upstream.py --pull`: a `git pull --ff-only` that exits
+  non-zero (a diverged clone, a lost tracking branch) is an
+  `error: CalledProcessError` row; 1.4.4 reported it as `sha → sha`,
+  indistinguishable from "nothing upstream". The timeout test now stalls the
+  pull specifically, after a real `rev-parse`.
+
 ## [1.4.4] - 2026-09-04
 
 Independent review of the public repository (every shipped script read line

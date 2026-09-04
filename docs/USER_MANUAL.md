@@ -1,6 +1,6 @@
 # pythtb-skill — User Manual
 
-Version 1.4.4 — 2026-09-04. Source: `docs/USER_MANUAL.md`; build HTML/PDF with
+Version 1.4.5 — 2026-09-04. Source: `docs/USER_MANUAL.md`; build HTML/PDF with
 `python docs/build_manual.py` (`--outdir D`, `--no-pdf`, `--verbose`). Companions:
 `SKILL.md` (teaches an AI agent how to *use* PythTB) and `AGENTS.md` (how to
 *maintain* this repository). This manual and the README must never contradict

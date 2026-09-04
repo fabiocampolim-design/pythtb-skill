@@ -89,10 +89,41 @@ def test_pull_all_records_a_timed_out_pull_instead_of_raising(tmp_path, monkeypa
     import subprocess as sp
     (tmp_path / "clone" / ".git").mkdir(parents=True)
 
+    class _Done:
+        stdout = "abc1234def5678\n"
+
     def hang(cmd, **k):
-        raise sp.TimeoutExpired(cmd=cmd, timeout=k.get("timeout"))
+        if cmd[1] == "pull":
+            raise sp.TimeoutExpired(cmd=cmd, timeout=k.get("timeout"))
+        return _Done()
     monkeypatch.setattr(wu.subprocess, "run", hang)
-    assert wu.pull_all(str(tmp_path)) == [("clone", "?", "timeout")]
+    assert wu.pull_all(str(tmp_path)) == [("clone", "abc1234", "timeout")]
+
+
+def test_pull_all_records_a_failed_pull_instead_of_pretending_it_was_up_to_date(tmp_path, monkeypatch):
+    """1.4.5 (post-review): `git pull --ff-only` exiting non-zero (a diverged
+    clone, a lost tracking branch) was reported as `sha -> sha`, i.e. as
+    "nothing upstream"; it is a failure row."""
+    import subprocess as sp
+    (tmp_path / "clone" / ".git").mkdir(parents=True)
+
+    class _Done:
+        stdout = "abc1234def5678\n"
+
+    def fail(cmd, **k):
+        if cmd[1] == "pull":
+            raise sp.CalledProcessError(128, cmd, stderr="fatal: Not possible to fast-forward")
+        return _Done()
+    monkeypatch.setattr(wu.subprocess, "run", fail)
+    assert wu.pull_all(str(tmp_path)) == [("clone", "abc1234", "error: CalledProcessError")]
+
+
+def test_git_helper_raises_on_a_non_zero_exit(tmp_path):
+    """The helper the rows above rely on: a failing git command raises, it does
+    not hand back an empty string."""
+    import subprocess as sp
+    with pytest.raises(sp.CalledProcessError):
+        wu._git(str(tmp_path), "rev-parse", "--verify", "definitely-not-a-ref")
 
 
 def test_log_dir_flag_names_the_log_directory_itself(tmp_path):

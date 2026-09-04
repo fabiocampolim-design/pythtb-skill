@@ -198,8 +198,11 @@ def pull_all(upstream_dir):
 
 
 def _git(cwd, *args, timeout=600):
+    # check=True: a failed pull (a diverged clone, a lost tracking branch)
+    # raises and becomes an error row; without it the report read
+    # `sha -> sha`, indistinguishable from "nothing upstream" (1.4.5)
     return subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True,
-                          timeout=timeout).stdout.strip()
+                          timeout=timeout, check=True).stdout.strip()
 
 
 def build_parser():
