@@ -83,6 +83,28 @@ def test_pull_all_reports_snapshots_and_skips_missing(tmp_path):
     assert wu.pull_all(str(tmp_path)) == [("pythtb-repo", "snapshot", "snapshot")]
 
 
+def test_pull_all_records_a_timed_out_pull_instead_of_raising(tmp_path, monkeypatch):
+    """1.4.4: a stalled `git pull` (no network, a hung remote) is a row in the
+    report, not a traceback that kills the weekly task."""
+    import subprocess as sp
+    (tmp_path / "clone" / ".git").mkdir(parents=True)
+
+    def hang(cmd, **k):
+        raise sp.TimeoutExpired(cmd=cmd, timeout=k.get("timeout"))
+    monkeypatch.setattr(wu.subprocess, "run", hang)
+    assert wu.pull_all(str(tmp_path)) == [("clone", "?", "timeout")]
+
+
+def test_log_dir_flag_names_the_log_directory_itself(tmp_path):
+    """1.4.4: --log-dir X wrote to dirname(X)/logs; X is the directory."""
+    logs = tmp_path / "mylogs"
+    rc = wu.main(["--pull", "--upstream-dir", str(tmp_path / "nowhere"),
+                  "--log-dir", str(logs), "-q"])
+    assert rc == 0
+    assert [p for p in os.listdir(logs) if p.startswith("watch_upstream-")]
+    assert not (tmp_path / "logs").exists()
+
+
 def test_load_previous_on_empty_state_dir(tmp_path):
     prev = wu.load_previous(str(tmp_path))
     assert prev["issues"] == [] and prev["pypi"] == [] and prev["head"] == {}

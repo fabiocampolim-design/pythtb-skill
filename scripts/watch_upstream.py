@@ -179,11 +179,27 @@ def pull_all(upstream_dir):
         if not os.path.isdir(os.path.join(p, ".git")):
             moved.append((d, "snapshot", "snapshot"))
             continue
-        before = subprocess.run(["git", "rev-parse", "HEAD"], cwd=p, capture_output=True, text=True).stdout.strip()
-        subprocess.run(["git", "pull", "--ff-only", "-q"], cwd=p, capture_output=True, text=True)
-        after = subprocess.run(["git", "rev-parse", "HEAD"], cwd=p, capture_output=True, text=True).stdout.strip()
+        # Every git call is bounded: a stalled pull (no network, a hung
+        # remote) is a row in the report, not a traceback that kills the
+        # scheduled weekly task (1.4.4).
+        before = "?"
+        try:
+            before = _git(p, "rev-parse", "HEAD")
+            _git(p, "pull", "--ff-only", "-q")
+            after = _git(p, "rev-parse", "HEAD")
+        except subprocess.TimeoutExpired:
+            moved.append((d, before[:7], "timeout"))
+            continue
+        except (subprocess.SubprocessError, OSError) as exc:
+            moved.append((d, before[:7], f"error: {type(exc).__name__}"))
+            continue
         moved.append((d, before[:7], after[:7]))
     return moved
+
+
+def _git(cwd, *args, timeout=600):
+    return subprocess.run(["git", *args], cwd=cwd, capture_output=True, text=True,
+                          timeout=timeout).stdout.strip()
 
 
 def build_parser():
@@ -208,7 +224,9 @@ def main(argv=None):
     args = build_parser().parse_args(argv)
     week = datetime.date.today().strftime("%G-W%V")
     extra = {}
-    log_root = os.path.dirname(args.log_dir) if args.log_dir else args.state_dir
+    # --log-dir names the directory itself; the default is <state-dir>/logs
+    # (1.4.4: it used to write into dirname(--log-dir)/logs)
+    log_kw = {"log_dir": args.log_dir} if args.log_dir else {}
     try:
         if args.weekly:
             prev = load_previous(args.state_dir)
@@ -235,11 +253,13 @@ def main(argv=None):
             return 2
     except (urllib.error.URLError, TimeoutError, OSError) as exc:
         extra["error"] = str(exc)
-        pythtb_tools.audit_log(log_root, argv if argv is not None else sys.argv[1:], extra, script="watch_upstream")
+        pythtb_tools.audit_log(args.state_dir, argv if argv is not None else sys.argv[1:], extra,
+                               script="watch_upstream", **log_kw)
         print(f"watch_upstream: upstream unreachable: {exc}", file=sys.stderr)
         return 1
     # audit logs live with the snapshots (gitignored), not among the weekly reports
-    pythtb_tools.audit_log(log_root, argv if argv is not None else sys.argv[1:], extra, script="watch_upstream")
+    pythtb_tools.audit_log(args.state_dir, argv if argv is not None else sys.argv[1:], extra,
+                           script="watch_upstream", **log_kw)
     if not args.quiet:
         print("watch_upstream:", json.dumps(extra, default=str))
     return 0

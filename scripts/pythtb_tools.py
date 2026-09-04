@@ -57,13 +57,14 @@ def version():
 __version__ = version()
 
 
-def audit_log(outdir, argv, extra=None, script="pythtb_tools"):
-    """Playbook rule 12: one JSON log per invocation under ``<outdir>/logs/``.
+def audit_log(outdir, argv, extra=None, script="pythtb_tools", log_dir=None):
+    """Playbook rule 12: one JSON log per invocation under ``<outdir>/logs/``
+    (or exactly ``log_dir`` when a caller passes its ``--log-dir``).
 
     Returns the path written. Never raises on a serialisation problem — values
     that are not JSON fall back to ``str``.
     """
-    logdir = os.path.join(outdir, "logs")
+    logdir = log_dir or os.path.join(outdir, "logs")
     os.makedirs(logdir, exist_ok=True)
     stamp = datetime.datetime.now(datetime.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     path = os.path.join(logdir, f"{script}-{stamp}.log")

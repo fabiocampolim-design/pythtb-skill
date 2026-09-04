@@ -5,6 +5,23 @@ All notable changes to pythtb-skill are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The current version is in `VERSION`
 and is printed by every script's `--version`.
 
+## [1.4.4] - 2026-09-04
+
+Independent review of the public repository (every shipped script read line
+by line); each fix has a test that failed first. Notebooks are untouched.
+
+### Fixed
+- `scripts/watch_upstream.py --log-dir X` writes its audit log into `X`
+  itself; it wrote into `dirname(X)/logs`, which only coincided with the
+  documented default. `pythtb_tools.audit_log` takes an explicit `log_dir`.
+- `scripts/watch_upstream.py --pull`: a stalled `git pull` (no network, a
+  hung remote) is a `timeout` row in the report instead of a traceback that
+  killed the scheduled weekly task; every git call is bounded (10 min).
+
+### Changed
+- Vendored conformance checker 1.6.1 (rules 25–27, citation-version check);
+  the byte-identity test is green again.
+
 ## [1.4.3] - 2026-09-02
 
 ### Added
