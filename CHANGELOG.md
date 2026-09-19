@@ -5,6 +5,35 @@ All notable changes to pythtb-skill are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The current version is in `VERSION`
 and is printed by every script's `--version`.
 
+## [1.4.7] - 2026-09-19
+
+Follow-up to the 1.4.6 hostile review: closed the two items that were left
+for Fabio's review, refreshed the stale upstream mirror, and removed a
+recurring version-drift failure mode instead of just re-fixing it.
+
+### Fixed
+- The six `course/tools/*.py` scripts hardcoded `__version__` as a literal
+  string, independently of `VERSION` — the exact drift 1.4.6 had to fix by
+  hand. They now read `VERSION` at import time (same pattern `scripts/*.py`
+  already used), so a version bump can no longer miss them.
+
+### Changed
+- `docs/drafts/`: added `P4-solve-all-solve-one-dead-code.md` and
+  `P5-wannier-plot-decay-1d.md` after a novelty check (`gh search issues
+  --repo pythtb/pythtb` — 0 hits for `solve_all`, `solve_one`, `plot_decay`);
+  both suggested fixes verified locally before writing them down. Removed
+  the dead `P3-fragile-haldane-edge-test.md` (upstream fixed it first).
+- `mirror/pythtb-repo/` was a flattened, non-git 2026-08-28 snapshot that
+  could not be refreshed with `git pull`; replaced with a real clone, now at
+  `main` @ a4efb51 (2026-09-10). Its own suite: 145 passed, 0 failed (was
+  102/1) — confirms commit f2338e8 fixed P3, and it independently landed
+  essentially the same projector-comparison approach P3's draft proposed.
+  P1/P2/P4 re-confirmed present at the same line numbers.
+- `docs/01-upstream-audit.md`, `docs/02-findings-backlog.md`: recorded the
+  above.
+
+Notebooks untouched — no chapter content, checks, or figures changed.
+
 ## [1.4.6] - 2026-09-19
 
 The hostile review of 1.4.5 (Claude Fable 5, independent-model verification):

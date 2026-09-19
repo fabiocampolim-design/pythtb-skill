@@ -28,12 +28,21 @@ import os
 import re
 import sys
 
-__version__ = "1.4.6"
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 SKILL = os.path.abspath(os.path.join(HERE, "..", ".."))
 sys.path.insert(0, os.path.join(SKILL, "build"))
 from assemble import MAIN_KEYS, outputs as _chapter_paths  # noqa: E402
+
+
+def _version():
+    try:
+        with open(os.path.join(SKILL, "VERSION"), encoding="utf-8") as f:
+            return f.read().strip()
+    except OSError:
+        return "unknown"
+
+
+__version__ = _version()
 
 # the book chapters that carry figures, in reading order (chapter 0 has none)
 NOTEBOOKS = [_chapter_paths(SKILL)[k] for k in MAIN_KEYS if k != "00"]

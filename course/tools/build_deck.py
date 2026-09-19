@@ -31,10 +31,20 @@ import os
 import re
 import sys
 
-__version__ = "1.4.6"
-
 HERE = os.path.dirname(os.path.abspath(__file__))
 COURSE = os.path.abspath(os.path.join(HERE, ".."))
+
+
+def _version():
+    try:
+        with open(os.path.join(COURSE, "..", "VERSION"), encoding="utf-8") as f:
+            return f.read().strip()
+    except OSError:
+        return "unknown"
+
+
+__version__ = _version()
+
 CONTENT = os.path.join(COURSE, "deck", "content.en.js")
 PROVENANCE = os.path.join(COURSE, "deck", "figs", "provenance.json")
 INDEX = os.path.join(COURSE, "deck", "index.html")
