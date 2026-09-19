@@ -173,13 +173,19 @@ drafts in the study folder next to this repository until they are filed.
   the upstream test suite run on the same machine (102 pass, 1 platform-fragile).
 - **CI-validated 2026-08-31** (first push): Linux, Windows and macOS ×
   Python 3.12/3.13 — fast suite on all six, plus a full re-execution of every
-  chapter notebook on ubuntu (130 checks green in 68 s). Formerly listed here as
+  chapter notebook on ubuntu, green (see `test_series_totals_do_not_regress`
+  for the current book-wide check/figure counts — do not hardcode a snapshot
+  number here, it drifts as the book grows). Formerly listed here as
   "untested until CI runs".
-- **Planned:** file the three upstream issues; answer upstream #62 (Peierls
-  substitution) and #60 (DOS) with the recipes from §21 and exercise IV.2;
-  a `hofstadter(p, q)` supercell helper in `pythtb_tools`; interactive 3D
-  Weyl/BZ figures; a section on quantum geometry (`quantum_metric`) once the
-  upstream API settles.
+- **Planned:** file P1 and P2 (still open on upstream `main`; P3 was already
+  fixed upstream 2026-09-08, commit f2338e8 — dropped from the drafts, see
+  `docs/02-findings-backlog.md`); answer upstream #62 (Peierls substitution)
+  with the recipe from exercise IV.2; a `hofstadter(p, q)` supercell helper in
+  `pythtb_tools`; interactive 3D Weyl/BZ figures; a section on quantum
+  geometry (`quantum_metric`) once the upstream API settles.
+- **Landed upstream, unprompted:** #60 (DOS) closed by the maintainers
+  (`docs/watch/2026-W38.md`); this project's §21/exercise IV.2 recipe is no
+  longer needed as an answer to it.
 
 ## How it was built
 

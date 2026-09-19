@@ -28,15 +28,23 @@ E = m.solve_ham(k)                                       # (nk, nband); single k
 
 Ready-made models: `pythtb.models` (`ssh, graphene, haldane, kane_mele, bhz,
 checkerboard, fu_kane_mele, ...`). Finite pieces: `cut_piece`, `make_finite`,
-`make_supercell`; spin: `Lattice(..., spinful=True)`-style models need
-`WFArray(..., spinful=True)`. Ground rules that save debugging time:
+`make_supercell`; spin lives on **`TBModel(lattice, spinful=True)`**, not on
+`Lattice` — `Lattice` never takes a `spinful` argument — and a spinful model
+needs `WFArray(..., spinful=True)` to match. Ground rules that save debugging
+time:
 
 - `recip_lat_vecs`, `lat_vecs`, `orb_vecs`, `norb`, `parameters` are
   **properties**, not methods.
-- `solve_ham(k, param=...)` broadcasts as `(nk, n_param, nband)` — k axis first.
+- Parametrized models take **named keyword arguments**, not a `param=`/`params=`
+  dict: build hops/onsites with callables of a parameter name (e.g.
+  `set_hop(lambda v: v, 0, 1, [0])`), then call `solve_ham(k, v=array_of_values)`
+  — it broadcasts to `(nk, *param_shapes, nband)`, k axis first. A `params={...}`
+  kwarg raises `ValueError: Unknown parameter name(s): params`.
 - `remove_orb` **mutates in place and returns None** (docstring says otherwise):
   use `scripts/pythtb_tools.remove_orb_copy`.
-- Callable onsites need `ind_i`; `np.cross` on 2-vectors is gone in numpy ≥ 2.5.
+- A **single bare callable** onsite needs `ind_i` (`set_onsite(f, ind_i=0)`); a
+  **list** of per-orbital values — callables, numbers, or a mix — does not
+  (`set_onsite([f0, f1, ...])`). `np.cross` on 2-vectors is gone in numpy ≥ 2.5.
 - Full v1.x → 2.0 correspondence and every trap: `references/api-map.md`.
 
 ## 2. Topological invariants (the core mission)
@@ -53,12 +61,15 @@ C   = wfa.chern_number(state_idx=[0], plane=(0, 1))          # also TBModel.cher
   reference-line crossings — `scripts/pythtb_tools.z2_wcc_flow(model)`.
 - **Wilson-loop phases**: `wilson_loop(wilson_evals=True)` returns cos φ in
   2.0.2 (float-cast bug) — use `pythtb_tools.wilson_phases(wfa, axis, states)`.
-- **Axion angle / second Chern**: `wfa.axion_angle(nks, param_periods, return_second_chern=True)`
-  with a swept parameter; ~10 s at 24³.
-- `chern_number` / `axion_angle` raise `ZeroDivisionError` *exactly at* a gap
-  closing — offset the grid by half a step. Convention I phases (orbital
-  positions enter the Bloch phases): the boundary factor for manual loops is
-  `u(k+G)_τ = e^{-2πi G·τ} u(k)_τ`. Recipes and conventions: `references/invariants.md`.
+- **Axion angle / second Chern**: `model.axion_angle(nks, param_periods, return_second_chern=True)`
+  — it's a **`TBModel`** method, not `WFArray`; ~10 s at 24³.
+- `chern_number` / `axion_angle` divide by the gap and can go **silently
+  wrong** near a closing (not just raise `ZeroDivisionError`) — check the gap
+  on the same grid first, don't just offset and rerun. `k_endpoints` does
+  *not* affect Berry phases or Chern numbers either way. Convention I phases
+  (orbital positions enter the Bloch phases): the boundary factor for manual
+  loops is `u(k+G)_τ = e^{-2πi G·τ} u(k)_τ`. Recipes and conventions:
+  `references/invariants.md`.
 
 ## 3. Finite systems and real space
 

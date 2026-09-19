@@ -100,3 +100,22 @@ def test_version_consistency():
     assert re.fullmatch(r"\d+\.\d+\.\d+", version)
     assert f"## [{version}]" in _read("CHANGELOG.md")
     assert f'version: "{version}"' in _read("CITATION.cff")
+
+
+# Each entry: a phrase that must NEVER reappear in the skill docs, and why —
+# these are wrong PythTB 2.0.2 API statements a hostile review (2026-09-19)
+# found and fixed; an agent following the wrong phrase gets an AttributeError
+# or a ValueError instead of working code.
+WRONG_API_PHRASES = [
+    ("wfa.axion_angle", "axion_angle is a TBModel method, not WFArray's"),
+    ("Lattice(..., spinful=True)", "spinful lives on TBModel, not Lattice"),
+    ("solve_ham(k, param=", "parametrized models take named kwargs, not param="),
+]
+
+
+@pytest.mark.parametrize("relpath", ["SKILL.md", os.path.join("references", "invariants.md"),
+                                     os.path.join("references", "api-map.md")])
+def test_no_wrong_api_statements_in_skill_docs(relpath):
+    blob = _read(relpath)
+    for phrase, why in WRONG_API_PHRASES:
+        assert phrase not in blob, f"{relpath}: reintroduced a wrong API statement ({why}): {phrase!r}"

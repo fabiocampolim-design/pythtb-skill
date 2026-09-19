@@ -16,8 +16,9 @@ helper module (`scripts/pythtb_tools.py`), an environment check
 + `scripts/register_watch_task.ps1`), a book of executed chapter notebooks on
 **PythTB 2.0.2** in which every physics claim is checked inline, and an
 undergraduate course (`course/`) whose every figure is a notebook output. Licence
-Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (1.3.0), history in
-`CHANGELOG.md`, citation in `CITATION.cff`.
+Apache-2.0 (`LICENSE`, `NOTICE`); version in `VERSION` (kept in sync with
+`CHANGELOG.md` and `CITATION.cff` by `test_docs_guard.py` — read `VERSION`
+itself rather than trusting a number quoted in prose, here included).
 
 | Path | Role |
 |---|---|
@@ -152,6 +153,7 @@ Bump `VERSION`, add the `CHANGELOG.md` section, update `CITATION.cff`
 | `test_docs_guard.py` | every CLI flag of every script appears in this file and the manual; README/manual counts equal the executed notebooks' tallies and state the number of chapters; every chapter file is named in the manual and here; `VERSION` = `CHANGELOG` = `CITATION.cff` | — |
 | `test_license.py` | Apache-2.0 `LICENSE` with disclaimers, `NOTICE`, README `## Licence` + `### Disclaimer`, SPDX header in every `.py` | — |
 | `test_no_held_material.py` | no tracked text file contains a token whose hash is listed in `tests/held_terms.txt` (material withheld from publication) | git |
+| `test_githubify_conformance.py` | `tests/conformance.py` is byte-identical to the canonical GITHUBIFY checker (skips without the private rules pointer); the checker actually runs and produces a JSON report | private rules file for the identity check |
 
 All tests skip (never fail) when a dependency is absent.
 

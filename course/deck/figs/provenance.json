@@ -667,8 +667,8 @@
    "cell": 13,
    "figure": 66,
    "caption": "Wall time of a full dense diagonalization versus matrix size, log-log, with the ideal N³ slope as a guide. The measured effective exponent sits below 3 in this range only because threaded BLAS gains efficiency as matrices grow; the asymptote is inescapable. Every quantity PythTB computes — bands, Berry phases, markers, Wannier functions — stands on this staircase.",
-   "sha256": "89d1a56057015a557c0cbe204a4b8987dde4fe36f34397d61959501108aa76f2",
-   "bytes": 35925
+   "sha256": "5c87cb70953b26705f4e67e90e2491ed980d0040c63b86ce5f0c8264ababa127",
+   "bytes": 36078
   },
   "s28-f1.png": {
    "chapter": "PythTB_08_What_PythTB_Cannot_Do.ipynb",

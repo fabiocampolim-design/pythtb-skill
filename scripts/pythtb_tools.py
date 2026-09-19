@@ -192,6 +192,16 @@ def to_kwant(model):
 
     if getattr(model, "dim_k", 0) not in (0, None) and model.dim_k != 0:
         raise ValueError("to_kwant handles finite (dim_k == 0) models only")
+    if getattr(model, "spinful", False):
+        # hamiltonian() is (norb,2,norb,2) for a spinful model, not (norb,norb) —
+        # indexing it as spinless below would raise an opaque array-to-float
+        # TypeError instead of saying what is actually wrong
+        raise ValueError(
+            "to_kwant handles spinless models only: a spinful model's "
+            "hamiltonian() is shaped (norb,2,norb,2); reshape to "
+            "(2*norb,2*norb) yourself (spin-major, matching solve_ham's "
+            "flatten_spin_axis=True order) before exporting"
+        )
     pos = np.asarray(model.orb_vecs) @ np.asarray(model.lat_vecs)
     dim = pos.shape[1]
     lat = kwant.lattice.general(np.eye(dim), basis=pos, norbs=1)

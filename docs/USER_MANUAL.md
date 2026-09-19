@@ -74,7 +74,7 @@ nitride; Lieb and kagome flat bands with compact localized states; finite system
 Thouless pump; 3D models; importing a Wannier90 model of silicon (`W90`);
 Wannierization inside PythTB (`Wannier`).
 
-**Part II — Topological matter (§14–21).** Haldane model (Chern number three ways,
+**Part II — Topological matter (§14–20).** Haldane model (Chern number three ways,
 phase diagram, edge states); Kane–Mele Z₂ via Wannier-centre flow; BHZ quantum well
 on a lattice; BBH quadrupole insulator and nested Wilson loops; Kitaev chain as a
 BdG "hack" with Majorana end modes; Weyl semimetals (monopoles, sliced Chern numbers,
@@ -218,7 +218,7 @@ and skips otherwise.
 ## 7. Every feature and every known limitation
 
 **Features (guarantees).**
-- Every numerical claim in both notebooks is checked inline; the suite fails if any check fails.
+- Every numerical claim in every chapter notebook (`chapters/`) is checked inline; the suite fails if any check fails.
 - Every figure has an auto-numbered caption; every physical system is drawn before it is computed.
 - Notebook text and code are the concatenation of `build/*.py` — reproducible, diff-able, testable.
 - Fixed random seeds (`default_rng(2026)` etc.): outputs are deterministic.

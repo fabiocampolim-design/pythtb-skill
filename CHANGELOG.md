@@ -5,6 +5,65 @@ All notable changes to pythtb-skill are recorded here. The format follows
 [Semantic Versioning](https://semver.org/). The current version is in `VERSION`
 and is printed by every script's `--version`.
 
+## [1.4.6] - 2026-09-19
+
+The hostile review of 1.4.5 (Claude Fable 5, independent-model verification):
+ran the full suite for real instead of trusting the docs, found it red, and
+found factually wrong API statements in the skill itself.
+
+### Fixed
+- §24 (`build/part03_stretching.py`) asserted a wall-clock scaling exponent
+  as if it were a physics check; it is machine-load-dependent and was flaky
+  by construction. Now best-of-3 timed and widened to a bound that only
+  rules out O(N)/O(1) scaling, not one that pins the exact exponent.
+- `tests/conformance.py` had drifted to 1.6.2 against the canonical 1.6.7 and
+  crashed (`KeyError`) on the current `rules.yaml` instead of reporting.
+  Re-vendored; byte-identical to canonical again.
+- §20's Fu–Kane–Mele model (`build/part02c_weyl_axion.py`) rebuilt the
+  diamond lattice and spin–orbit hopping loop by hand, near-verbatim from
+  upstream's `pythtb.models.fu_kane_mele` — contradicting this project's own
+  "contains no PythTB source code" claim (README, NOTICE, SKILL.md). Rebuilt
+  on `pythtb.models.fu_kane_mele` itself, overriding only the beta-dependent
+  onsite/hop on top of it; verified bit-for-bit identical Hamiltonians to the
+  old construction before re-executing.
+- `SKILL.md` / `references/invariants.md` stated PythTB APIs that don't
+  exist or behave differently and would make an agent's code throw:
+  `wfa.axion_angle` (it's `TBModel.axion_angle`), `Lattice(...,
+  spinful=True)` (it's `TBModel(lattice, spinful=True)`), `solve_ham(k,
+  param=...)` (named kwargs, not a dict), plus a wrong SSH Zak-phase
+  convention number and a false "`k_endpoints` required for Chern numbers"
+  rule. All verified against the installed 2.0.2 interpreter before fixing.
+- `pythtb_tools.to_kwant` now raises a clear `ValueError` for a spinful
+  model instead of an opaque array-to-float `TypeError` (its
+  `hamiltonian()` is `(norb,2,norb,2)`, not the shape the exporter assumed).
+- The six `course/tools/*.py` scripts hardcode `__version__` independently
+  of `VERSION` (unlike `scripts/*.py`, which read it); missed during 1.4.5's
+  bump and caught by `test_course_tools_print_their_version` this time —
+  bumped to 1.4.6.
+
+### Added
+- `references/api-map.md` traps 11–13: `TBModel.solve_all`/`solve_one` are
+  dead code in 2.0.2 (always raise — new draft candidate P4); a parametrized
+  `Mesh` axis must be named exactly after the model's own parameter (§10,
+  exercise I.5, relied on silently until now); spinful `hamiltonian()`'s
+  layout.
+- `tests/test_docs_guard.py::test_no_wrong_api_statements_in_skill_docs`
+  guards against the wrong-API phrases above reappearing.
+
+### Changed
+- `docs/02-findings-backlog.md`: P3 dropped (upstream fixed it first,
+  commit f2338e8, 2026-09-08); P5 confirmed with a repro; P6 reframed as
+  silent-wrong-answer risk, not just an ugly exception; B2 dropped (#60
+  closed upstream) — the weekly watch had reported both three weeks earlier
+  and neither had been folded back.
+- Small doc drifts: `AGENTS.md` no longer quotes a stale `VERSION` number
+  and its test table now lists `test_githubify_conformance.py`;
+  `docs/USER_MANUAL.md`'s Part II/III section ranges no longer overlap;
+  `references/ecosystem.md` refreshed against the 2026-W38 upstream watch.
+
+Notebooks re-executed end to end (book-wide totals unchanged: 72+35 checks,
+69+18 figures); course figures re-extracted; deck confirmed fresh.
+
 ## [1.4.5] - 2026-09-04
 
 The independent review of 1.4.4 (one finding). Notebooks are untouched.

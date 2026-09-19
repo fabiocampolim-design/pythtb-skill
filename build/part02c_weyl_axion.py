@@ -208,23 +208,16 @@ one dimension up. Θ-odd physics in its cleanest numerical form.
 """),
 
 code(r"""
-# FKM diamond model + staggered (111) Zeeman of strength m sin(beta), bond
-# modulation m cos(beta)  (adapted from the PythTB 2.0 axion tutorial)
+# FKM diamond model (PythTB's own model builder) + staggered (111) Zeeman of
+# strength m sin(beta), bond modulation m cos(beta) on top of it (the adiabatic
+# cycle is this notebook's construction, not part of the library model)
+from pythtb.models import fu_kane_mele
+
 t_fkm, soc, m_ax = 1.0, 0.25, 0.5
-lat_dia = Lattice([[0, 1, 1], [1, 0, 1], [1, 1, 0]],
-                  [[0, 0, 0], [0.25, 0.25, 0.25]], periodic_dirs=...)
-fkm = TBModel(lat_dia, spinful=True)
+fkm = fu_kane_mele(t_fkm, soc)
 fkm.set_onsite(lambda beta: [0,  m_ax*np.sin(beta),  m_ax*np.sin(beta),  m_ax*np.sin(beta)], ind_i=0)
 fkm.set_onsite(lambda beta: [0, -m_ax*np.sin(beta), -m_ax*np.sin(beta), -m_ax*np.sin(beta)], ind_i=1)
-for lvec in ([-1, 0, 0], [0, -1, 0], [0, 0, -1]):
-    fkm.set_hop(t_fkm, 0, 1, lvec)
 fkm.set_hop(lambda beta: 3 * t_fkm + m_ax * np.cos(beta), 0, 1, [0, 0, 0], mode="set")
-lvec_list = ([1, 0, 0], [0, 1, 0], [0, 0, 1], [-1, 1, 0], [0, -1, 1], [1, 0, -1])
-dir_list = ([0, 1, -1], [-1, 0, 1], [1, -1, 0], [1, 1, 0], [0, 1, 1], [1, 0, 1])
-for j in range(6):
-    spin = np.array([0.0] + dir_list[j])
-    fkm.set_hop(1j * soc * spin, 0, 0, lvec_list[j])
-    fkm.set_hop(-1j * soc * spin, 1, 1, lvec_list[j])
 
 # bulk bands at the TRS point beta = pi (this is the strong-TI configuration)
 fkm_pi = fkm.with_parameters(beta=np.pi)

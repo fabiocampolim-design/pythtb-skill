@@ -1,6 +1,7 @@
 # The PythTB ecosystem: repositories, versions, community, citing
 
-State as of 2026-08-28.
+State as of 2026-08-28, refreshed 2026-09-19 from `docs/watch/2026-W38.md`
+(this study repo's weekly upstream watch — not redistributed with the skill).
 
 ## Repositories and releases
 
@@ -9,11 +10,11 @@ State as of 2026-08-28.
 | Canonical repo | https://github.com/pythtb/pythtb (org `pythtb`; also `pythtb/.github`, `conda-forge/pythtb-feedstock`) |
 | Docs | https://pythtb.readthedocs.io (2.0 only — 1.8 docs removed 2026-06); tutorials incl. the ICTP-MARVEL 2026 tutorial notebooks in `docs/source/_static/talk/` |
 | Classic site | http://www.physics.rutgers.edu/pythtb (v1.x examples; all portable to 2.0 with `references/api-map.md`) |
-| Releases | 2.0.0 2025-11-11 (modular rewrite), 2.0.1 2026-01-29 (Wannier spinful fix, `models.ssh` intercell fix), **2.0.2 2026-05-26 on PyPI** (nn_bonds return type, `plot_bands` spin projection, removed `W90.model(fill_hermitian)`, faster `hamiltonian()`); no code commits on `main` since |
+| Releases | 2.0.0 2025-11-11 (modular rewrite), 2.0.1 2026-01-29 (Wannier spinful fix, `models.ssh` intercell fix), **2.0.2 2026-05-26 on PyPI** (nn_bonds return type, `plot_bands` spin projection, removed `W90.model(fill_hermitian)`, faster `hamiltonian()`); PyPI still at 2.0.2 as of 2026-09-19, but `main` has moved since (commits through 2026-09-10, e.g. f2338e8 2026-09-08 fixing the Haldane edge test flagged below) |
 | Authors | Trey Cole (2.x maintainer), Sinisa Coh, David Vanderbilt |
 | Licence | GPL-3.0-or-later; `CITATION.cff` DOI 10.5281/zenodo.12721315 |
-| Community | GitHub issues only (no list/forum found). Open items relevant to users: #99 `plot_bands` docstring mismatch, #94 Binder lacks plotly, #62 Peierls substitution, #60 density of states, #53 band-gap checks, #52 visualizations, #50 `write_tb` in W90 |
-| Upstream tests | `pytest tests` in the repo: 102 pass, 1 fails on Windows/OpenBLAS (`test_examples/haldane/edge` compares raw eigenvectors — phase freedom) |
+| Community | GitHub issues only (no list/forum found). Open items relevant to users: #94 Binder lacks plotly, #62 Peierls substitution, #53 band-gap checks, #52 visualizations, #50 `write_tb` in W90. **Closed since 2026-08-28**: #99 (`plot_bands` docstring mismatch, fixed by PR #100) and #60 (density of states) |
+| Upstream tests | As of 2026-08-28: `pytest tests` in the repo, 102 pass, 1 fails on Windows/OpenBLAS (`test_examples/haldane/edge` compares raw eigenvectors — phase freedom). Upstream commit f2338e8 (2026-09-08) targets exactly this failure; not yet re-run here against a refreshed `mirror/` clone (still at the 2026-08-28 snapshot) |
 
 ## Physics companions
 
